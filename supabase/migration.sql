@@ -37,3 +37,12 @@ create policy "Allow read by share token" on assessments
 -- Allow email capture inserts
 create policy "Allow email capture insert" on email_captures
   for insert with check (true);
+
+-- Allow updating assessments (for payment status)
+create policy "Allow update assessments" on assessments
+  for update using (true);
+
+-- Payment columns
+alter table assessments add column if not exists paid boolean default false;
+alter table assessments add column if not exists stripe_session_id text;
+alter table assessments add column if not exists paid_at timestamptz;

@@ -17,7 +17,7 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-4xl mx-auto px-6 pt-20 pb-32 text-center">
+      <section className="max-w-4xl mx-auto px-6 pt-20 pb-24 text-center">
         <h1 className="font-display text-5xl md:text-7xl font-bold text-cream leading-tight mb-6 animate-fade-in">
           Where should you
           <br />
@@ -117,6 +117,90 @@ export default function Home() {
           Join{" "}
           <span className="text-cream font-semibold">12,400+ people</span> who
           have found their next act
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="max-w-4xl mx-auto px-6 pb-32">
+        <h2 className="font-display text-3xl md:text-4xl text-cream text-center mb-4">
+          Simple, transparent pricing
+        </h2>
+        <p className="text-slate text-center mb-12 max-w-lg mx-auto">
+          Start free. Upgrade when you want the full picture.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {/* Free tier */}
+          <div className="bg-navy/50 border border-navy-light rounded-2xl p-8">
+            <h3 className="font-display text-xl text-cream mb-1">Free</h3>
+            <p className="text-slate text-sm mb-6">Get started instantly</p>
+            <p className="font-display text-3xl text-cream mb-6">$0</p>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-start gap-2 text-sm text-cream/80">
+                <span className="text-slate flex-shrink-0">✓</span>
+                Full 5-minute assessment
+              </li>
+              <li className="flex items-start gap-2 text-sm text-cream/80">
+                <span className="text-slate flex-shrink-0">✓</span>
+                1 top recommendation with full details
+              </li>
+              <li className="flex items-start gap-2 text-sm text-cream/80">
+                <span className="text-slate flex-shrink-0">✓</span>
+                Basic cost comparison
+              </li>
+              <li className="flex items-start gap-2 text-sm text-cream/60">
+                <span className="text-slate/40 flex-shrink-0">—</span>
+                3 more recommendations (locked)
+              </li>
+              <li className="flex items-start gap-2 text-sm text-cream/60">
+                <span className="text-slate/40 flex-shrink-0">—</span>
+                Deep-dive city reports
+              </li>
+            </ul>
+            <Link
+              href="/assess"
+              className="block text-center bg-navy-light hover:bg-navy text-cream font-medium px-6 py-3 rounded-lg transition-colors border border-navy-light"
+            >
+              Start Free Assessment
+            </Link>
+          </div>
+
+          {/* Pro tier */}
+          <div className="bg-navy/50 border-2 border-gold/40 rounded-2xl p-8 relative">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-medium px-3 py-1 bg-gold text-navy-dark rounded-full">
+              Most Popular
+            </span>
+            <h3 className="font-display text-xl text-cream mb-1">
+              Encore Pro
+            </h3>
+            <p className="text-slate text-sm mb-6">The full picture</p>
+            <p className="font-display text-3xl text-gold mb-1">$29</p>
+            <p className="text-slate text-xs mb-6">one-time — no subscription</p>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-start gap-2 text-sm text-cream/80">
+                <span className="text-gold flex-shrink-0">✓</span>
+                Everything in Free
+              </li>
+              <li className="flex items-start gap-2 text-sm text-cream/80">
+                <span className="text-gold flex-shrink-0">✓</span>
+                All 4 personalized recommendations
+              </li>
+              <li className="flex items-start gap-2 text-sm text-cream/80">
+                <span className="text-gold flex-shrink-0">✓</span>
+                Deep-dive city reports with neighborhoods &amp; visa paths
+              </li>
+              <li className="flex items-start gap-2 text-sm text-cream/80">
+                <span className="text-gold flex-shrink-0">✓</span>
+                Unlimited reassessments
+              </li>
+            </ul>
+            <Link
+              href="/assess"
+              className="block text-center bg-gold hover:bg-gold-light text-navy-dark font-semibold px-6 py-3 rounded-lg transition-all hover:shadow-lg hover:shadow-gold/20"
+            >
+              Get Started — $29
+            </Link>
+          </div>
         </div>
       </section>
 

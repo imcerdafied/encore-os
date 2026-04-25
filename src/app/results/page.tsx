@@ -1,39 +1,128 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { AssessmentResult } from "@/lib/types";
 import ResultsView from "@/components/ResultsView";
 import Link from "next/link";
 
 function ResultsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [error, setError] = useState("");
+  const [isPaid, setIsPaid] = useState(false);
+  const [unlockLoading, setUnlockLoading] = useState(false);
 
+  const getToken = useCallback(() => {
+    return result?.shareToken || searchParams.get("token") || "";
+  }, [result, searchParams]);
+
+  // Check if already paid via localStorage
+  const checkLocalPaid = useCallback((token: string) => {
+    if (token && localStorage.getItem(`encore_paid_${token}`) === "true") {
+      return true;
+    }
+    return false;
+  }, []);
+
+  // Mark as paid in localStorage
+  const markPaid = useCallback((token: string) => {
+    if (token) {
+      localStorage.setItem(`encore_paid_${token}`, "true");
+    }
+    setIsPaid(true);
+  }, []);
+
+  // Verify payment on mount if session_id or mock_paid present
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    const mockPaid = searchParams.get("mock_paid");
+    const token = searchParams.get("token");
+
+    if (sessionId || mockPaid) {
+      const params = new URLSearchParams();
+      if (sessionId) params.set("session_id", sessionId);
+      if (mockPaid) params.set("mock_paid", mockPaid);
+      if (token) params.set("token", token);
+
+      fetch(`/api/verify-payment?${params}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.paid && token) {
+            markPaid(token);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [searchParams, markPaid]);
+
+  // Load results
   useEffect(() => {
     const id = searchParams.get("id");
-    if (!id) {
+    const token = searchParams.get("token");
+
+    if (!id && !token) {
       setError("No assessment ID provided");
       return;
     }
 
-    // Results are passed via sessionStorage from the assess page API call
-    const stored = sessionStorage.getItem(`result-${id}`);
-    if (stored) {
-      setResult(JSON.parse(stored));
-      return;
+    // Check localStorage for paid status
+    if (token && checkLocalPaid(token)) {
+      setIsPaid(true);
     }
 
-    // Try fetching from Supabase
-    fetch(`/api/results?id=${id}`)
+    // Try sessionStorage first (from assess page)
+    if (id) {
+      const stored = sessionStorage.getItem(`result-${id}`);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setResult(parsed);
+        if (parsed.shareToken && checkLocalPaid(parsed.shareToken)) {
+          setIsPaid(true);
+        }
+        return;
+      }
+    }
+
+    // Fetch from API
+    const param = token ? `token=${token}` : `id=${id}`;
+    fetch(`/api/results?${param}`)
       .then((r) => {
         if (!r.ok) throw new Error("Results not found");
         return r.json();
       })
-      .then(setResult)
+      .then((data) => {
+        setResult(data);
+        if (data.shareToken && checkLocalPaid(data.shareToken)) {
+          setIsPaid(true);
+        }
+      })
       .catch(() => setError("Results not found. They may have expired."));
-  }, [searchParams]);
+  }, [searchParams, checkLocalPaid]);
+
+  const handleUnlock = async () => {
+    const token = getToken();
+    if (!token) return;
+
+    setUnlockLoading(true);
+    try {
+      const res = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json();
+
+      if (data.mockMode) {
+        router.push(data.url);
+      } else if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      setUnlockLoading(false);
+    }
+  };
 
   if (error) {
     return (
@@ -59,7 +148,14 @@ function ResultsContent() {
     );
   }
 
-  return <ResultsView result={result} />;
+  return (
+    <ResultsView
+      result={result}
+      isPaid={isPaid}
+      onUnlock={handleUnlock}
+      unlockLoading={unlockLoading}
+    />
+  );
 }
 
 export default function ResultsPage() {

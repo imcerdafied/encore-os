@@ -1,19 +1,28 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
 import { AssessmentResult } from "@/lib/types";
 import ResultsView from "@/components/ResultsView";
 import Link from "next/link";
 
 export default function SavedResultsPage() {
   const params = useParams();
+  const router = useRouter();
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [error, setError] = useState("");
+  const [isPaid, setIsPaid] = useState(false);
+  const [unlockLoading, setUnlockLoading] = useState(false);
+
+  const token = params.token as string;
 
   useEffect(() => {
-    const token = params.token as string;
     if (!token) return;
+
+    // Check localStorage for paid status
+    if (localStorage.getItem(`encore_paid_${token}`) === "true") {
+      setIsPaid(true);
+    }
 
     fetch(`/api/results?token=${token}`)
       .then((r) => {
@@ -22,7 +31,27 @@ export default function SavedResultsPage() {
       })
       .then(setResult)
       .catch(() => setError("Results not found"));
-  }, [params.token]);
+  }, [token]);
+
+  const handleUnlock = useCallback(async () => {
+    if (!token) return;
+    setUnlockLoading(true);
+    try {
+      const res = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json();
+      if (data.mockMode) {
+        router.push(data.url);
+      } else if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      setUnlockLoading(false);
+    }
+  }, [token, router]);
 
   if (error) {
     return (
@@ -48,5 +77,12 @@ export default function SavedResultsPage() {
     );
   }
 
-  return <ResultsView result={result} />;
+  return (
+    <ResultsView
+      result={result}
+      isPaid={isPaid}
+      onUnlock={handleUnlock}
+      unlockLoading={unlockLoading}
+    />
+  );
 }
