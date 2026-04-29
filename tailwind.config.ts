@@ -9,27 +9,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy: {
-          DEFAULT: "#0F1F3D",
-          light: "#1A2D52",
-          dark: "#0A1528",
+        bg: {
+          DEFAULT: "#FFFFFF",
+          subtle: "#F7F7F5",
         },
-        gold: {
-          DEFAULT: "#C9A84C",
-          light: "#D4BA6A",
-          dark: "#B8953A",
+        text: {
+          DEFAULT: "#111111",
+          secondary: "#666666",
         },
-        cream: "#F8F6F1",
-        slate: "#6B7280",
+        accent: "#C9A84C",
+        border: "#E0E0E0",
       },
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        body: ["Inter", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ['"Courier New"', "Courier", "monospace"],
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out",
         "slide-up": "slideUp 0.5s ease-out",
-        "pulse-slow": "pulse 3s infinite",
       },
       keyframes: {
         fadeIn: {

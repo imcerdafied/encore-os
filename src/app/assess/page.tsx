@@ -62,35 +62,6 @@ const TIMELINES = [
   "Actively planning (next 6 months)",
 ];
 
-function StepIndicator({ current, total }: { current: number; total: number }) {
-  return (
-    <div className="flex items-center gap-2 mb-8">
-      {Array.from({ length: total }, (_, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
-              i + 1 === current
-                ? "bg-gold text-navy-dark"
-                : i + 1 < current
-                ? "bg-gold/30 text-gold"
-                : "bg-navy-light text-slate"
-            }`}
-          >
-            {i + 1 < current ? "✓" : i + 1}
-          </div>
-          {i < total - 1 && (
-            <div
-              className={`w-8 h-0.5 ${
-                i + 1 < current ? "bg-gold/30" : "bg-navy-light"
-              }`}
-            />
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function OptionButton({
   label,
   selected,
@@ -104,10 +75,10 @@ function OptionButton({
     <button
       type="button"
       onClick={onClick}
-      className={`px-4 py-3 rounded-lg border text-sm font-medium transition-all text-left ${
+      className={`px-4 py-3 border text-sm text-left transition-all ${
         selected
-          ? "bg-gold/10 border-gold text-gold"
-          : "bg-navy-light/50 border-navy-light text-cream hover:border-slate"
+          ? "bg-text text-white border-text"
+          : "bg-white border-border text-text hover:border-text-secondary"
       }`}
     >
       {label}
@@ -170,21 +141,23 @@ export default function AssessPage() {
     }
   };
 
+  const progressWidth = `${(step / 5) * 100}%`;
+
   if (loading) {
     return (
-      <main className="min-h-screen bg-navy-dark flex items-center justify-center">
+      <main className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
-          <div className="w-16 h-16 border-4 border-navy-light border-t-gold rounded-full animate-spin mx-auto mb-8" />
-          <h2 className="font-display text-2xl text-cream mb-3">
+          <div className="w-12 h-12 border-2 border-border border-t-text rounded-full animate-spin mx-auto mb-8" />
+          <h2 className="text-2xl font-black text-text mb-3">
             Finding your next chapter
           </h2>
-          <p className="text-slate text-sm mb-8">
+          <p className="text-text-secondary text-sm mb-8">
             Analyzing 847 factors for your situation...
           </p>
-          <div className="w-full bg-navy-light rounded-full h-1.5 overflow-hidden">
-            <div className="h-full bg-gold rounded-full loading-bar" />
+          <div className="w-full bg-bg-subtle h-px overflow-hidden">
+            <div className="h-full bg-text loading-bar" />
           </div>
-          <div className="mt-8 space-y-3 text-slate text-xs">
+          <div className="mt-8 text-text-secondary text-xs">
             <p className="animate-pulse">Evaluating cost of living data...</p>
           </div>
         </div>
@@ -193,33 +166,42 @@ export default function AssessPage() {
   }
 
   return (
-    <main className="min-h-screen bg-navy-dark">
-      <nav className="flex items-center justify-between px-6 py-5 max-w-3xl mx-auto">
-        <Link href="/" className="font-display text-xl font-bold text-cream">
-          Encore<span className="text-gold">OS</span>
+    <main className="min-h-screen bg-white">
+      {/* Progress bar */}
+      <div className="h-px bg-border">
+        <div
+          className="h-full bg-text transition-all duration-500"
+          style={{ width: progressWidth }}
+        />
+      </div>
+
+      <nav className="flex items-center justify-between px-6 py-5 max-w-[680px] mx-auto">
+        <Link href="/" className="font-mono text-sm text-text tracking-tight">
+          encore-os
         </Link>
-        <span className="text-sm text-slate">
+        <span className="font-mono text-xs text-text-secondary">
           Step {step} of 5
         </span>
       </nav>
 
-      <div className="max-w-2xl mx-auto px-6 py-8">
-        <StepIndicator current={step} total={5} />
-
+      <div className="max-w-[680px] mx-auto px-6 py-8">
         {/* Step 1: Where you are now */}
         {step === 1 && (
           <div className="animate-fade-in">
-            <h2 className="font-display text-3xl text-cream mb-2">
+            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+              &bull; encore-os / assess
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
               Where you are now
             </h2>
-            <p className="text-slate mb-8">
+            <p className="text-text-secondary mb-10">
               Tell us about your current situation so we can find somewhere
               better.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label className="block text-sm text-cream mb-2">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Current city / country
                 </label>
                 <input
@@ -227,12 +209,12 @@ export default function AssessPage() {
                   placeholder="e.g. Austin, TX or London, UK"
                   value={data.currentCity}
                   onChange={(e) => update({ currentCity: e.target.value })}
-                  className="w-full bg-navy-light border border-navy-light rounded-lg px-4 py-3 text-cream placeholder:text-slate/50 focus:outline-none focus:border-gold transition-colors"
+                  className="w-full border border-text bg-white px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text text-[16px]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-2">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Monthly take-home income (USD)
                 </label>
                 <div className="flex items-center gap-4">
@@ -247,14 +229,14 @@ export default function AssessPage() {
                     }
                     className="flex-1"
                   />
-                  <span className="text-gold font-medium w-24 text-right">
+                  <span className="font-mono text-sm text-text w-24 text-right">
                     ${data.monthlyIncome.toLocaleString()}
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-2">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Monthly expenses / rent (USD)
                 </label>
                 <div className="flex items-center gap-4">
@@ -269,14 +251,14 @@ export default function AssessPage() {
                     }
                     className="flex-1"
                   />
-                  <span className="text-gold font-medium w-24 text-right">
+                  <span className="font-mono text-sm text-text w-24 text-right">
                     ${data.monthlyExpenses.toLocaleString()}
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Net worth / savings range
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -292,7 +274,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Work situation
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -313,16 +295,19 @@ export default function AssessPage() {
         {/* Step 2: Life situation */}
         {step === 2 && (
           <div className="animate-fade-in">
-            <h2 className="font-display text-3xl text-cream mb-2">
+            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+              &bull; encore-os / assess
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
               Life situation
             </h2>
-            <p className="text-slate mb-8">
+            <p className="text-text-secondary mb-10">
               Your household shapes what matters in a location.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label className="block text-sm text-cream mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Household
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -340,7 +325,7 @@ export default function AssessPage() {
               {(data.household === "Partner + kids" ||
                 data.household === "Single parent") && (
                 <div>
-                  <label className="block text-sm text-cream mb-2">
+                  <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                     Children&apos;s ages
                   </label>
                   <input
@@ -348,13 +333,13 @@ export default function AssessPage() {
                     placeholder="e.g. 4, 7, 12"
                     value={data.kidAges}
                     onChange={(e) => update({ kidAges: e.target.value })}
-                    className="w-full bg-navy-light border border-navy-light rounded-lg px-4 py-3 text-cream placeholder:text-slate/50 focus:outline-none focus:border-gold transition-colors"
+                    className="w-full border border-text bg-white px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text text-[16px]"
                   />
                 </div>
               )}
 
-              <div className="flex items-center justify-between bg-navy-light/50 rounded-lg p-4">
-                <label className="text-sm text-cream">
+              <div className="flex items-center justify-between border border-border p-4">
+                <label className="text-sm text-text">
                   Aging parents to consider?
                 </label>
                 <button
@@ -362,12 +347,12 @@ export default function AssessPage() {
                   onClick={() =>
                     update({ agingParents: !data.agingParents })
                   }
-                  className={`w-12 h-6 rounded-full transition-colors ${
-                    data.agingParents ? "bg-gold" : "bg-navy-light"
+                  className={`w-12 h-6 transition-colors ${
+                    data.agingParents ? "bg-text" : "bg-border"
                   }`}
                 >
                   <div
-                    className={`w-5 h-5 bg-cream rounded-full transition-transform ${
+                    className={`w-5 h-5 bg-white transition-transform ${
                       data.agingParents
                         ? "translate-x-6"
                         : "translate-x-0.5"
@@ -376,8 +361,8 @@ export default function AssessPage() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between bg-navy-light/50 rounded-lg p-4">
-                <label className="text-sm text-cream">
+              <div className="flex items-center justify-between border border-border p-4">
+                <label className="text-sm text-text">
                   Health considerations that affect location?
                 </label>
                 <button
@@ -387,12 +372,12 @@ export default function AssessPage() {
                       healthConsiderations: !data.healthConsiderations,
                     })
                   }
-                  className={`w-12 h-6 rounded-full transition-colors ${
-                    data.healthConsiderations ? "bg-gold" : "bg-navy-light"
+                  className={`w-12 h-6 transition-colors ${
+                    data.healthConsiderations ? "bg-text" : "bg-border"
                   }`}
                 >
                   <div
-                    className={`w-5 h-5 bg-cream rounded-full transition-transform ${
+                    className={`w-5 h-5 bg-white transition-transform ${
                       data.healthConsiderations
                         ? "translate-x-6"
                         : "translate-x-0.5"
@@ -403,7 +388,7 @@ export default function AssessPage() {
 
               {data.healthConsiderations && (
                 <div>
-                  <label className="block text-sm text-cream mb-2">
+                  <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                     Health details (optional)
                   </label>
                   <input
@@ -413,7 +398,7 @@ export default function AssessPage() {
                     onChange={(e) =>
                       update({ healthDetails: e.target.value })
                     }
-                    className="w-full bg-navy-light border border-navy-light rounded-lg px-4 py-3 text-cream placeholder:text-slate/50 focus:outline-none focus:border-gold transition-colors"
+                    className="w-full border border-text bg-white px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text text-[16px]"
                   />
                 </div>
               )}
@@ -424,33 +409,36 @@ export default function AssessPage() {
         {/* Step 3: Priorities */}
         {step === 3 && (
           <div className="animate-fade-in">
-            <h2 className="font-display text-3xl text-cream mb-2">
+            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+              &bull; encore-os / assess
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
               What matters most
             </h2>
-            <p className="text-slate mb-8">
+            <p className="text-text-secondary mb-10">
               Rate each factor from 1 (not important) to 5 (essential). Select
               at least 3.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {PRIORITIES.map((p) => (
                 <div
                   key={p}
-                  className="bg-navy-light/50 rounded-lg p-4 flex items-center justify-between gap-4"
+                  className="border border-border p-4 flex items-center justify-between gap-4"
                 >
-                  <span className="text-sm text-cream flex-1">{p}</span>
+                  <span className="text-sm text-text flex-1">{p}</span>
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((n) => (
                       <button
                         key={n}
                         type="button"
                         onClick={() => updatePriority(p, n)}
-                        className={`w-8 h-8 rounded text-xs font-medium transition-all ${
+                        className={`w-8 h-8 text-xs font-medium transition-all ${
                           data.priorities[p] === n
-                            ? "bg-gold text-navy-dark"
+                            ? "bg-text text-white"
                             : data.priorities[p] && data.priorities[p] >= n
-                            ? "bg-gold/20 text-gold"
-                            : "bg-navy-light text-slate hover:text-cream"
+                            ? "bg-text/10 text-text"
+                            : "bg-bg-subtle text-text-secondary hover:bg-border"
                         }`}
                       >
                         {n}
@@ -460,7 +448,7 @@ export default function AssessPage() {
                 </div>
               ))}
             </div>
-            <p className="text-slate text-xs mt-4">
+            <p className="font-mono text-text-secondary text-xs mt-4">
               {Object.keys(data.priorities).length} of 3 minimum selected
             </p>
           </div>
@@ -469,16 +457,19 @@ export default function AssessPage() {
         {/* Step 4: Openness to change */}
         {step === 4 && (
           <div className="animate-fade-in">
-            <h2 className="font-display text-3xl text-cream mb-2">
+            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+              &bull; encore-os / assess
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
               Openness to change
             </h2>
-            <p className="text-slate mb-8">
-              How far are you willing to go — literally and figuratively?
+            <p className="text-text-secondary mb-10">
+              How far are you willing to go &mdash; literally and figuratively?
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label className="block text-sm text-cream mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Geographic range
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -494,7 +485,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Urban preference
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -510,7 +501,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Timeline
                 </label>
                 <div className="grid grid-cols-1 gap-3">
@@ -526,7 +517,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-2">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Biggest fear about moving (optional)
                 </label>
                 <textarea
@@ -534,7 +525,7 @@ export default function AssessPage() {
                   value={data.biggestFear}
                   onChange={(e) => update({ biggestFear: e.target.value })}
                   rows={3}
-                  className="w-full bg-navy-light border border-navy-light rounded-lg px-4 py-3 text-cream placeholder:text-slate/50 focus:outline-none focus:border-gold transition-colors resize-none"
+                  className="w-full border border-text bg-white px-4 py-3 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text resize-none text-[16px]"
                 />
               </div>
             </div>
@@ -544,16 +535,19 @@ export default function AssessPage() {
         {/* Step 5: AI angle */}
         {step === 5 && (
           <div className="animate-fade-in">
-            <h2 className="font-display text-3xl text-cream mb-2">
+            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+              &bull; encore-os / assess
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
               The AI angle
             </h2>
-            <p className="text-slate mb-8">
-              Optional but powerful — helps us factor in economic resilience.
+            <p className="text-text-secondary mb-10">
+              Optional but powerful &mdash; helps us factor in economic resilience.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label className="block text-sm text-cream mb-2">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   Current job / field
                 </label>
                 <input
@@ -561,16 +555,16 @@ export default function AssessPage() {
                   placeholder="e.g. Marketing manager, Software engineer, Nurse"
                   value={data.currentJob}
                   onChange={(e) => update({ currentJob: e.target.value })}
-                  className="w-full bg-navy-light border border-navy-light rounded-lg px-4 py-3 text-cream placeholder:text-slate/50 focus:outline-none focus:border-gold transition-colors"
+                  className="w-full border border-text bg-white px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text text-[16px]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   How worried are you about AI affecting your income?
                 </label>
                 <div className="flex items-center gap-4">
-                  <span className="text-xs text-slate">Not at all</span>
+                  <span className="text-xs text-text-secondary">Not at all</span>
                   <input
                     type="range"
                     min={1}
@@ -582,15 +576,15 @@ export default function AssessPage() {
                     }
                     className="flex-1"
                   />
-                  <span className="text-xs text-slate">Very worried</span>
+                  <span className="text-xs text-text-secondary">Very worried</span>
                 </div>
-                <div className="text-center text-gold text-sm mt-1">
+                <div className="text-center font-mono text-sm text-text mt-1">
                   {data.aiWorryLevel} / 5
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-cream mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
                   What are you looking for?
                 </label>
                 <div className="grid grid-cols-1 gap-3">
@@ -612,20 +606,20 @@ export default function AssessPage() {
 
         {/* Navigation */}
         {error && (
-          <div className="mt-6 p-4 bg-red-900/20 border border-red-800 rounded-lg text-red-300 text-sm">
+          <div className="mt-6 p-4 border border-red-300 bg-red-50 text-red-800 text-sm">
             {error}
           </div>
         )}
 
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-navy-light">
+        <div className="flex items-center justify-between mt-12 pt-6 border-t border-border">
           <button
             type="button"
             onClick={() => setStep((s) => Math.max(1, s - 1))}
-            className={`text-sm text-slate hover:text-cream transition-colors ${
+            className={`text-sm text-text-secondary hover:text-text transition-colors ${
               step === 1 ? "invisible" : ""
             }`}
           >
-            ← Back
+            &larr; Back
           </button>
 
           {step < 5 ? (
@@ -633,21 +627,21 @@ export default function AssessPage() {
               type="button"
               disabled={!canNext()}
               onClick={() => setStep((s) => s + 1)}
-              className={`px-6 py-3 rounded-lg text-sm font-medium transition-all ${
+              className={`px-6 py-3 text-sm font-medium transition-all ${
                 canNext()
-                  ? "bg-gold text-navy-dark hover:bg-gold-light"
-                  : "bg-navy-light text-slate cursor-not-allowed"
+                  ? "bg-text text-white hover:bg-black"
+                  : "bg-border text-text-secondary cursor-not-allowed"
               }`}
             >
-              Continue →
+              Continue &rarr;
             </button>
           ) : (
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-8 py-3 rounded-lg text-sm font-medium bg-gold text-navy-dark hover:bg-gold-light transition-all"
+              className="px-8 py-3 text-sm font-medium bg-text text-white hover:bg-black transition-all"
             >
-              Find My Next Chapter →
+              Find My Next Chapter &rarr;
             </button>
           )}
         </div>

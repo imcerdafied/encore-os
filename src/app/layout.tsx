@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Encore OS — Where Should You Go Next?",
+  title: "encore-os — Where Should You Go Next?",
   description:
     "AI-powered relocation advisor. Tell us about your life and we'll find your next chapter in a world reshaped by AI and economic change.",
   manifest: "/manifest.json",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#C9A84C",
+  themeColor: "#FFFFFF",
   width: "device-width",
   initialScale: 1,
 };
@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-body antialiased">{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

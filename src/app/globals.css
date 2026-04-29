@@ -2,16 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
 :root {
-  --navy: #0f1f3d;
-  --navy-light: #1a2d52;
-  --navy-dark: #0a1528;
-  --gold: #c9a84c;
-  --gold-light: #d4ba6a;
-  --cream: #f8f6f1;
-  --slate: #6b7280;
+  --bg: #FFFFFF;
+  --bg-subtle: #F7F7F5;
+  --text: #111111;
+  --text-secondary: #666666;
+  --accent: #C9A84C;
+  --border: #E0E0E0;
+  --font-mono: "Courier New", Courier, monospace;
 }
 
 * {
@@ -19,64 +19,68 @@
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  background-color: var(--navy-dark);
-  color: var(--cream);
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Playfair Display", serif;
+h1, h2, h3, h4, h5, h6 {
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--text);
+  color: var(--bg);
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--navy-dark);
+  background: var(--bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--navy-light);
-  border-radius: 4px;
+  background: var(--border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--slate);
+  background: var(--text-secondary);
 }
 
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  height: 6px;
-  background: var(--navy-light);
-  border-radius: 3px;
+  height: 2px;
+  background: var(--border);
   outline: none;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--text);
   cursor: pointer;
-  border: 2px solid var(--cream);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--text);
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--text);
   cursor: pointer;
-  border: 2px solid var(--cream);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--text);
 }
 
 @keyframes analyzeSlide {

@@ -55,14 +55,14 @@ export default function SavedResultsPage() {
 
   if (error) {
     return (
-      <main className="min-h-screen bg-navy-dark flex items-center justify-center">
+      <main className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h2 className="font-display text-2xl text-cream mb-4">{error}</h2>
+          <h2 className="text-2xl font-black text-text mb-4">{error}</h2>
           <Link
             href="/assess"
-            className="text-gold hover:text-gold-light transition-colors"
+            className="text-text-secondary hover:text-text transition-colors"
           >
-            Take the assessment →
+            Take the assessment &rarr;
           </Link>
         </div>
       </main>
@@ -71,8 +71,8 @@ export default function SavedResultsPage() {
 
   if (!result) {
     return (
-      <main className="min-h-screen bg-navy-dark flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-navy-light border-t-gold rounded-full animate-spin" />
+      <main className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-border border-t-text rounded-full animate-spin" />
       </main>
     );
   }
