@@ -39,7 +39,8 @@ const WORK_SITUATIONS = [
 const HOUSEHOLDS = [
   "Solo",
   "Partner (no kids)",
-  "Partner + kids",
+  "Partner + young kids",
+  "Partner + adult kids",
   "Single parent",
   "Empty nester",
   "Retired couple",
@@ -221,8 +222,8 @@ export default function AssessPage() {
                   <input
                     type="range"
                     min={1000}
-                    max={30000}
-                    step={500}
+                    max={200000}
+                    step={1000}
                     value={data.monthlyIncome}
                     onChange={(e) =>
                       update({ monthlyIncome: Number(e.target.value) })
@@ -237,8 +238,12 @@ export default function AssessPage() {
 
               <div>
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
-                  Monthly expenses / rent (USD)
+                  Monthly total expenses, including housing (USD)
                 </label>
+                <p className="mb-3 text-sm text-text-secondary">
+                  Include rent or mortgage, childcare, debt, travel, recurring
+                  bills, and normal monthly spend.
+                </p>
                 <div className="flex items-center gap-4">
                   <input
                     type="range"
@@ -322,11 +327,11 @@ export default function AssessPage() {
                 </div>
               </div>
 
-              {(data.household === "Partner + kids" ||
+              {(data.household === "Partner + young kids" ||
                 data.household === "Single parent") && (
                 <div>
                   <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
-                    Children&apos;s ages
+                    Young children&apos;s ages
                   </label>
                   <input
                     type="text"

@@ -7,7 +7,7 @@ import { getServiceClient } from "@/lib/supabase";
 function getOpenAI() {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    throw new Error("OpenAI is not configured");
+    throw new Error("MISSING_OPENAI_API_KEY");
   }
   return new OpenAI({ apiKey });
 }
@@ -34,7 +34,7 @@ Mix: include options at different boldness levels — one "safe easy move," one 
 USER PROFILE:
 - Current location: ${data.currentCity}
 - Monthly income: $${data.monthlyIncome.toLocaleString()}/month
-- Monthly expenses: $${data.monthlyExpenses.toLocaleString()}/month
+- Monthly total expenses, including housing: $${data.monthlyExpenses.toLocaleString()}/month
 - Savings range: ${data.savingsRange}
 - Work situation: ${data.workSituation}
 - Household: ${data.household}${data.kidAges ? ` (children ages: ${data.kidAges})` : ""}
@@ -131,6 +131,16 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error("Assessment error:", err);
+    if (err instanceof Error && err.message === "MISSING_OPENAI_API_KEY") {
+      return NextResponse.json(
+        {
+          error:
+            "Encore OS is not connected to OpenAI yet. Add OPENAI_API_KEY in Vercel to generate recommendations.",
+        },
+        { status: 503 }
+      );
+    }
+
     const message =
       err instanceof Error ? err.message : "Failed to generate recommendations";
     return NextResponse.json({ error: message }, { status: 500 });

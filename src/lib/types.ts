@@ -30,8 +30,8 @@ export interface AssessmentData {
 
 export const defaultAssessment: AssessmentData = {
   currentCity: "",
-  monthlyIncome: 5000,
-  monthlyExpenses: 3000,
+  monthlyIncome: 10000,
+  monthlyExpenses: 5000,
   savingsRange: "",
   workSituation: "",
   household: "",
