@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AssessmentData, defaultAssessment } from "@/lib/types";
+import { identify, track } from "@/lib/analytics";
+import { getAssessmentAnalyticsProperties } from "@/lib/analytics-events";
 import Link from "next/link";
 
 const PRIORITIES = [
@@ -81,6 +83,14 @@ const TIMELINES = [
 
 const MONEY_MAX = 200000;
 
+const STEP_NAMES: Record<number, string> = {
+  1: "where_you_are_now",
+  2: "life_situation",
+  3: "priorities",
+  4: "openness_to_change",
+  5: "work_and_opportunity",
+};
+
 function formatMoney(value: number, currency: string) {
   try {
     return new Intl.NumberFormat("en-US", {
@@ -123,6 +133,7 @@ export default function AssessPage() {
   const [data, setData] = useState<AssessmentData>(defaultAssessment);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const viewedSteps = useRef<Set<number>>(new Set());
 
   const update = (fields: Partial<AssessmentData>) =>
     setData((prev) => ({ ...prev, ...fields }));
@@ -155,9 +166,38 @@ export default function AssessPage() {
     }
   };
 
+  useEffect(() => {
+    if (viewedSteps.current.has(step)) return;
+    viewedSteps.current.add(step);
+
+    track("assessment_step_viewed", {
+      step,
+      step_name: STEP_NAMES[step],
+    });
+  }, [step]);
+
+  const goBack = () => {
+    track("assessment_back_clicked", {
+      step,
+      step_name: STEP_NAMES[step],
+    });
+    setStep((s) => Math.max(1, s - 1));
+  };
+
+  const goNext = () => {
+    track("assessment_step_completed", {
+      step,
+      step_name: STEP_NAMES[step],
+      ...getAssessmentAnalyticsProperties(data),
+    });
+    setStep((s) => s + 1);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
+    track("assessment_submitted", getAssessmentAnalyticsProperties(data));
+
     try {
       const res = await fetch("/api/assess", {
         method: "POST",
@@ -169,9 +209,19 @@ export default function AssessPage() {
         throw new Error(errData.error || "Something went wrong");
       }
       const result = await res.json();
+      identify(result.id, getAssessmentAnalyticsProperties(data));
+      track("assessment_generated", {
+        assessment_id: result.id,
+        visible_recommendations: result.recommendations?.length || 0,
+        total_recommendations: result.totalRecommendations || 0,
+        paid: Boolean(result.paid),
+      });
       sessionStorage.setItem(`result-${result.id}`, JSON.stringify(result));
       router.push(`/results?id=${result.id}`);
     } catch (err) {
+      track("assessment_generation_failed", {
+        error_name: err instanceof Error ? err.name : "unknown",
+      });
       setError(err instanceof Error ? err.message : "Something went wrong");
       setLoading(false);
     }
@@ -737,7 +787,7 @@ export default function AssessPage() {
         <div className="flex items-center justify-between mt-12 pt-6 border-t border-border">
           <button
             type="button"
-            onClick={() => setStep((s) => Math.max(1, s - 1))}
+            onClick={goBack}
             className={`text-sm text-text-secondary hover:text-text transition-colors ${
               step === 1 ? "invisible" : ""
             }`}
@@ -749,7 +799,7 @@ export default function AssessPage() {
             <button
               type="button"
               disabled={!canNext()}
-              onClick={() => setStep((s) => s + 1)}
+              onClick={goNext}
               className={`px-6 py-3 text-sm font-medium transition-all ${
                 canNext()
                   ? "bg-accent text-white hover:bg-night"

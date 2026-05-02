@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Recommendation, AssessmentResult } from "@/lib/types";
+import { identify, track } from "@/lib/analytics";
+import {
+  getRecommendationAnalyticsProperties,
+  getResultAnalyticsProperties,
+} from "@/lib/analytics-events";
 import Link from "next/link";
 
 const archetypeLabel: Record<string, string> = {
@@ -41,18 +46,44 @@ function RecommendationCard({
   rec: Recommendation;
   index: number;
   isPaid: boolean;
-  onUnlock: () => void;
+  onUnlock: (recommendation: Recommendation, index: number) => void;
   unlockLoading: boolean;
 }) {
   const [showTradeoffs, setShowTradeoffs] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
   const [copied, setCopied] = useState(false);
+  const recommendationAnalytics = getRecommendationAnalyticsProperties(
+    rec,
+    index
+  );
 
   const handleShare = async () => {
     const text = `${rec.flag} ${rec.city}, ${rec.country} - ${rec.headline}\n${rec.costComparison}\nCareer resilience: ${rec.aiResilienceScore}/10\n\nFound with Encore OS`;
     await navigator.clipboard.writeText(text);
+    track("recommendation_shared", recommendationAnalytics);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleUnlock = () => {
+    track("path_deep_dive_clicked", recommendationAnalytics);
+    onUnlock(rec, index);
+  };
+
+  const toggleTradeoffs = () => {
+    const nextValue = !showTradeoffs;
+    setShowTradeoffs(nextValue);
+    if (nextValue) {
+      track("path_tradeoffs_opened", recommendationAnalytics);
+    }
+  };
+
+  const toggleNextSteps = () => {
+    const nextValue = !showSteps;
+    setShowSteps(nextValue);
+    if (nextValue) {
+      track("path_next_steps_opened", recommendationAnalytics);
+    }
   };
 
   return (
@@ -122,13 +153,13 @@ function RecommendationCard({
         {isPaid ? (
           <div className="grid gap-3 sm:grid-cols-2">
             <button
-              onClick={() => setShowTradeoffs(!showTradeoffs)}
+              onClick={toggleTradeoffs}
               className="rounded-[8px] border border-border px-4 py-3 text-left text-sm font-semibold text-text transition hover:border-accent hover:bg-[#fff3df]"
             >
               {showTradeoffs ? "Hide tradeoffs" : "Honest tradeoffs"}
             </button>
             <button
-              onClick={() => setShowSteps(!showSteps)}
+              onClick={toggleNextSteps}
               className="rounded-[8px] border border-border px-4 py-3 text-left text-sm font-semibold text-text transition hover:border-teal hover:bg-bg-subtle"
             >
               {showSteps ? "Hide next steps" : "Practical next steps"}
@@ -136,7 +167,7 @@ function RecommendationCard({
           </div>
         ) : (
           <button
-            onClick={onUnlock}
+            onClick={handleUnlock}
             disabled={unlockLoading}
             className="w-full rounded-[8px] bg-text px-4 py-3 text-left text-sm font-bold text-white transition hover:bg-night disabled:opacity-60"
           >
@@ -186,7 +217,7 @@ export default function ResultsView({
 }: {
   result: AssessmentResult;
   isPaid: boolean;
-  onUnlock: () => void;
+  onUnlock: (recommendation: Recommendation, index: number) => void;
   unlockLoading: boolean;
 }) {
   const [email, setEmail] = useState("");
@@ -196,6 +227,16 @@ export default function ResultsView({
     result.totalRecommendations || result.recommendations.length;
   const visibleRecommendations = result.recommendations;
   const hasDeepDive = isPaid || Boolean(result.paid);
+  const viewed = useRef(false);
+
+  useEffect(() => {
+    if (viewed.current) return;
+    viewed.current = true;
+
+    const properties = getResultAnalyticsProperties(result, hasDeepDive);
+    identify(result.id, properties);
+    track("results_viewed", properties);
+  }, [hasDeepDive, result]);
 
   const handleEmailCapture = async () => {
     if (!email.includes("@")) return;
@@ -206,8 +247,14 @@ export default function ResultsView({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, assessmentId: result.id }),
       });
+      track("results_saved", {
+        assessment_id: result.id,
+      });
       setEmailSent(true);
     } catch {
+      track("results_save_failed", {
+        assessment_id: result.id,
+      });
       // Keep the results page usable even if email capture fails.
     }
     setEmailLoading(false);

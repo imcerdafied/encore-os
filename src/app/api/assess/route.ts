@@ -3,6 +3,8 @@ import OpenAI from "openai";
 import { v4 as uuidv4 } from "uuid";
 import { AssessmentData, Recommendation } from "@/lib/types";
 import { getServiceClient } from "@/lib/supabase";
+import { getAssessmentAnalyticsProperties } from "@/lib/analytics-events";
+import { captureServerEvent } from "@/lib/posthog-server";
 
 function getOpenAI() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -214,6 +216,12 @@ export async function POST(request: NextRequest) {
     const data: AssessmentData = await request.json();
 
     if (!data.currentCity || !data.currentCountry || !data.household) {
+      await captureServerEvent("assessment_validation_failed_server", "server", {
+        has_current_city: Boolean(data.currentCity),
+        has_current_country: Boolean(data.currentCountry),
+        has_household: Boolean(data.household),
+      });
+
       return NextResponse.json(
         { error: "Please complete the assessment" },
         { status: 400 }
@@ -266,6 +274,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    await captureServerEvent("assessment_generated_server", id, {
+      ...getAssessmentAnalyticsProperties(data),
+      visible_recommendations: prioritizedRecommendations.length,
+      total_recommendations: prioritizedRecommendations.length,
+      paid: false,
+    });
+
     return NextResponse.json({
       id,
       shareToken,
@@ -277,6 +292,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error("Assessment error:", err);
+    await captureServerEvent("assessment_generation_failed_server", "server", {
+      error_name: err instanceof Error ? err.name : "unknown",
+      missing_openai_key:
+        err instanceof Error && err.message === "MISSING_OPENAI_API_KEY",
+    });
+
     if (err instanceof Error && err.message === "MISSING_OPENAI_API_KEY") {
       return NextResponse.json(
         {

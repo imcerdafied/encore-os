@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AnalyticsLink from "@/components/AnalyticsLink";
 
 const steps = [
   {
@@ -59,12 +60,14 @@ export default function Home() {
             >
               Beta preview
             </a>
-            <Link
+            <AnalyticsLink
               href="/assess"
+              eventName="landing_cta_clicked"
+              eventProperties={{ cta: "nav_start" }}
               className="rounded-[8px] bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-dark"
             >
               Start
-            </Link>
+            </AnalyticsLink>
           </div>
         </nav>
 
@@ -82,12 +85,14 @@ export default function Home() {
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Link
+            <AnalyticsLink
               href="/assess"
+              eventName="landing_cta_clicked"
+              eventProperties={{ cta: "hero_start_assessment" }}
               className="rounded-[8px] bg-text px-6 py-4 text-center text-sm font-bold text-white transition hover:bg-night"
             >
               Start the assessment
-            </Link>
+            </AnalyticsLink>
             <a
               href="#how-it-works"
               className="rounded-[8px] border border-text/25 bg-surface/60 px-6 py-4 text-center text-sm font-bold text-text transition hover:border-text/45 hover:bg-surface"
@@ -205,12 +210,14 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-            <Link
+            <AnalyticsLink
               href="/assess"
+              eventName="landing_cta_clicked"
+              eventProperties={{ cta: "pricing_start_preview" }}
               className="mt-8 inline-flex w-full justify-center rounded-[8px] bg-text px-5 py-3 text-sm font-bold text-white transition hover:bg-night"
             >
               Start the preview
-            </Link>
+            </AnalyticsLink>
           </article>
 
           <article className="rounded-[8px] border border-border bg-surface p-7 shadow-soft">

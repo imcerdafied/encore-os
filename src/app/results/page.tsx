@@ -2,7 +2,9 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, Suspense } from "react";
-import { AssessmentResult } from "@/lib/types";
+import { AssessmentResult, Recommendation } from "@/lib/types";
+import { track } from "@/lib/analytics";
+import { getRecommendationAnalyticsProperties } from "@/lib/analytics-events";
 import ResultsView from "@/components/ResultsView";
 import Link from "next/link";
 
@@ -89,10 +91,18 @@ function ResultsContent() {
       .catch(() => setError("Results not found. They may have expired."));
   }, [searchParams]);
 
-  const handleUnlock = async () => {
+  const handleUnlock = async (rec: Recommendation, index: number) => {
     const token = getToken();
     if (!token) return;
 
+    const recommendationProperties = getRecommendationAnalyticsProperties(
+      rec,
+      index
+    );
+    track("checkout_requested", {
+      ...recommendationProperties,
+      has_token: Boolean(token),
+    });
     setUnlockLoading(true);
     try {
       const res = await fetch("/api/create-checkout", {
@@ -103,15 +113,22 @@ function ResultsContent() {
       const data = await res.json();
 
       if (data.mockMode) {
+        track("checkout_mock_redirected", recommendationProperties);
         router.push(data.url);
       } else if (data.url) {
+        track("checkout_redirected", recommendationProperties);
         window.location.href = data.url;
       } else {
         setUnlockLoading(false);
+        track("checkout_unavailable", {
+          ...recommendationProperties,
+          status: res.status,
+        });
         window.alert(data.error || "Checkout is not available yet.");
       }
     } catch {
       setUnlockLoading(false);
+      track("checkout_request_failed", recommendationProperties);
     }
   };
 

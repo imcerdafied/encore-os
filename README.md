@@ -15,6 +15,7 @@
 - **Tailwind CSS** - Navy/gold/cream design language
 - **Supabase** - Auth, assessment storage, email capture
 - **OpenAI GPT-4o** - Recommendation engine
+- **PostHog** - Product analytics, funnel events, and pageviews
 - **Vercel** - Deployment target
 
 ## Getting Started
@@ -30,6 +31,8 @@ cp .env.local.example .env.local
 # - NEXT_PUBLIC_SUPABASE_ANON_KEY
 # - SUPABASE_SERVICE_ROLE_KEY
 # - OPENAI_API_KEY
+# - NEXT_PUBLIC_POSTHOG_TOKEN
+# - NEXT_PUBLIC_POSTHOG_HOST
 
 # Run the Supabase migration
 # Copy contents of supabase/migration.sql into your Supabase SQL editor
@@ -77,3 +80,9 @@ vercel
 ```
 
 Set environment variables in Vercel dashboard before deploying.
+
+## Analytics
+
+PostHog is optional in local development. If `NEXT_PUBLIC_POSTHOG_TOKEN` is not set, analytics calls become no-ops and the app runs normally.
+
+Tracked product events include landing CTA clicks, assessment step views and completions, assessment generation, result views, recommendation shares, save-result actions, checkout intent, checkout redirects, and successful deep-dive unlocks. Event properties use bands and booleans for sensitive assessment details rather than sending raw free-form personal inputs.

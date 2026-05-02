@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabase";
 import Stripe from "stripe";
+import { captureServerEvent } from "@/lib/posthog-server";
 
 export async function GET(req: NextRequest) {
   const sessionId = req.nextUrl.searchParams.get("session_id");
@@ -45,6 +46,9 @@ export async function GET(req: NextRequest) {
           })
           .eq("share_token", token);
       }
+      await captureServerEvent("deep_dive_unlocked_server", token, {
+        payment_status: session.payment_status,
+      });
       return NextResponse.json({ paid: true });
     }
 
