@@ -5,25 +5,47 @@ const steps = [
   {
     number: "01",
     title: "Map the life you actually have",
-    body: "Tell us about money, family, work, health, climate, and what would make daily life feel better.",
+    body: "Capture what matters most: work, cost, family, lifestyle, pace, and the kind of future you want to build.",
   },
   {
     number: "02",
-    title: "Look for places with room to grow",
-    body: "Encore OS weighs cost, taxes, stability, culture, and practical move paths around the life you want next.",
+    title: "Compare places with real upside",
+    body: "Explore cities and regions through the lens of affordability, opportunity, resilience, and personal fit.",
   },
   {
     number: "03",
-    title: "Leave with a path you can test",
-    body: "Your result explains the upside, the catch, and the next concrete move to validate it in real life.",
+    title: "Leave with a move you can test",
+    body: "Turn a big decision into a practical plan, with scenarios you can compare before you commit.",
   },
 ];
 
 const reportHighlights = [
-  "What feels possible there",
-  "Cost delta vs. today",
-  "Career and lifestyle signals",
-  "Neighborhood and visa prompts",
+  "Cost",
+  "Opportunity",
+  "Lifestyle",
+  "Resilience",
+  "Family fit",
+];
+
+const scenarioPreview = [
+  {
+    label: "Best fit",
+    place: "Lisbon",
+    score: "86%",
+    note: "balanced cost, work, and family rhythm",
+  },
+  {
+    label: "Sleeper pick",
+    place: "Bologna",
+    score: "78%",
+    note: "quality of life with room to explore",
+  },
+  {
+    label: "Wildcard",
+    place: "Medellin",
+    score: "72%",
+    note: "upside if opportunity is the priority",
+  },
 ];
 
 const included = [
@@ -74,12 +96,12 @@ export default function Home() {
             You got next.
           </h1>
           <h2 className="mt-7 max-w-3xl text-xl font-semibold leading-8 text-text-secondary md:text-2xl md:leading-9">
-            EncoreOS helps you explore scenarios that might be more fitting for
-            the life you are building.
+            When work, cost, and opportunity are shifting fast, where you live
+            matters more than ever.
           </h2>
-          <p className="mt-5 inline-flex max-w-3xl rounded-[8px] border border-accent/25 bg-[#fff3df]/90 px-4 py-3 text-sm font-bold text-text shadow-soft">
-            Beta preview: explore four scenarios for free while we learn with
-            early users.
+          <p className="mt-4 max-w-2xl text-base leading-7 text-text-secondary md:text-lg">
+            EncoreOS helps you understand where your life, work, and future
+            opportunities may fit best.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -89,7 +111,7 @@ export default function Home() {
               eventProperties={{ cta: "hero_start_assessment" }}
               className="rounded-[8px] bg-accent px-6 py-4 text-center text-sm font-bold text-white shadow-soft transition hover:bg-accent-dark"
             >
-              Explore your next chapter
+              Run your scenarios
             </AnalyticsLink>
             <a
               href="#how-it-works"
@@ -97,6 +119,33 @@ export default function Home() {
             >
               See how it works
             </a>
+          </div>
+          <p className="mt-4 text-sm font-semibold text-text-secondary">
+            Start with 4 free scenarios during beta.
+          </p>
+
+          <div className="mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
+            {scenarioPreview.map((scenario) => (
+              <div
+                key={scenario.place}
+                className="rounded-[8px] border border-accent/18 bg-surface/76 p-4 shadow-soft backdrop-blur"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-mono text-[11px] uppercase text-accent">
+                    {scenario.label}
+                  </p>
+                  <p className="font-mono text-xs font-bold text-teal">
+                    {scenario.score}
+                  </p>
+                </div>
+                <h3 className="mt-3 text-lg font-black text-text">
+                  {scenario.place}
+                </h3>
+                <p className="mt-1 text-xs leading-5 text-text-secondary">
+                  {scenario.note}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -110,8 +159,8 @@ export default function Home() {
             A decision tool to explore what could be.
           </h2>
           <p className="mt-5 max-w-2xl text-text-secondary">
-            The product is built for relocation choices that are emotional,
-            financial, and strategic at the same time.
+            Built for relocation choices that are emotional, financial, and
+            strategic at the same time.
           </p>
         </div>
 
@@ -143,11 +192,11 @@ export default function Home() {
               inside the report
             </p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-              Recommendations with a little spark and a lot of practical sense.
+              See the tradeoffs and upside before a move gets real.
             </h2>
             <p className="mt-5 max-w-2xl text-text-secondary">
-              Each destination gives you a distinct kind of possibility: the
-              easy yes, the stretch, the sleeper pick, and the wildcard.
+              Each scenario combines personal priorities with practical signals
+              so the shortlist feels useful, not generic.
             </p>
           </div>
 
@@ -155,23 +204,40 @@ export default function Home() {
             <div className="flex items-start justify-between border-b border-border pb-5">
               <div>
                 <p className="font-mono text-xs text-text-secondary">
-                  sample destination
+                  scenario match
                 </p>
                 <h3 className="mt-2 text-3xl font-black">Lisbon</h3>
-                <p className="text-sm text-text-secondary">Portugal</p>
+                <p className="text-sm text-text-secondary">
+                  Portugal, balanced fit
+                </p>
               </div>
-              <div className="rounded-[8px] bg-teal px-3 py-2 text-sm font-bold text-white">
-                8/10
+              <div className="rounded-[8px] bg-teal px-3 py-2 text-right text-sm font-bold text-white">
+                86%
+                <span className="block font-mono text-[10px] font-normal uppercase text-white/78">
+                  fit score
+                </span>
               </div>
             </div>
-            <ul className="mt-6 space-y-3">
-              {reportHighlights.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm">
-                  <span className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-gold" />
-                  <span className="text-text-secondary">{item}</span>
-                </li>
+            <div className="mt-6 grid gap-3">
+              {reportHighlights.map((item, index) => (
+                <div key={item}>
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="font-mono text-[11px] uppercase text-text-secondary">
+                      {item}
+                    </span>
+                    <span className="font-mono text-[11px] text-text-secondary">
+                      {index === 0 ? "lower" : index === 1 ? "strong" : "high"}
+                    </span>
+                  </div>
+                  <div className="h-2 rounded-full bg-bg-subtle">
+                    <div
+                      className="h-full rounded-full bg-[linear-gradient(90deg,var(--accent),var(--gold),var(--teal))]"
+                      style={{ width: `${72 + index * 4}%` }}
+                    />
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -182,11 +248,11 @@ export default function Home() {
             beta preview
           </p>
           <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-            Explore the map for free.
+            Start with the map.
           </h2>
           <p className="mt-5 text-text-secondary">
-            During beta, Encore OS gives you the scenario map for free. Pay
-            only when you want to go deeper on a specific path.
+            During beta, Encore OS gives you 4 free scenarios. Go deeper on a
+            specific path when you want the practical details.
           </p>
         </div>
 
@@ -197,7 +263,7 @@ export default function Home() {
             </div>
             <h3 className="mt-5 text-2xl font-black">Beta preview</h3>
             <p className="mt-2 text-text-secondary">
-              See what is possible across four relocation scenarios.
+              Start with 4 free scenarios during beta.
             </p>
             <p className="mt-8 text-4xl font-black">$0</p>
             <p className="mt-1 text-sm text-text-secondary">
@@ -217,7 +283,7 @@ export default function Home() {
               eventProperties={{ cta: "pricing_start_preview" }}
               className="mt-8 inline-flex w-full justify-center rounded-[8px] bg-accent px-5 py-3 text-sm font-bold text-white shadow-soft transition hover:bg-accent-dark"
             >
-              Start the preview
+              Run your scenarios
             </AnalyticsLink>
           </article>
 
