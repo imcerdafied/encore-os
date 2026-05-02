@@ -116,7 +116,7 @@ function OptionButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-[8px] border px-4 py-3 text-left text-sm font-medium transition-all ${
+      className={`min-h-12 rounded-[8px] border px-4 py-3 text-left text-sm font-medium transition-all ${
         selected
           ? "border-accent bg-accent text-white shadow-soft"
           : "border-border bg-surface text-text hover:border-accent hover:bg-[#fff3df]"
@@ -228,6 +228,8 @@ export default function AssessPage() {
   };
 
   const progressWidth = `${(step / 5) * 100}%`;
+  const readyForNext = Boolean(canNext());
+  const keepMobileNavSticky = step > 1 || readyForNext;
 
   if (loading) {
     return (
@@ -272,7 +274,7 @@ export default function AssessPage() {
         </span>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="max-w-3xl mx-auto px-5 py-6 sm:px-6 sm:py-8">
         {/* Step 1: Where you are now */}
         {step === 1 && (
           <div className="animate-fade-in">
@@ -339,7 +341,15 @@ export default function AssessPage() {
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Monthly take-home income
                 </label>
-                <div className="grid grid-cols-[1fr_9rem] items-center gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-xs text-text-secondary">
+                      Per month
+                    </span>
+                    <span className="font-mono text-sm text-text">
+                      {formatMoney(data.monthlyIncome, data.currency)}
+                    </span>
+                  </div>
                   <input
                     type="range"
                     min={1000}
@@ -351,9 +361,6 @@ export default function AssessPage() {
                     }
                     className="w-full"
                   />
-                  <span className="font-mono text-sm text-text text-right">
-                    {formatMoney(data.monthlyIncome, data.currency)}
-                  </span>
                 </div>
               </div>
 
@@ -365,7 +372,15 @@ export default function AssessPage() {
                   Include rent or mortgage, childcare, debt, travel, recurring
                   bills, and normal monthly spend.
                 </p>
-                <div className="grid grid-cols-[1fr_9rem] items-center gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-xs text-text-secondary">
+                      Per month
+                    </span>
+                    <span className="font-mono text-sm text-text">
+                      {formatMoney(data.monthlyExpenses, data.currency)}
+                    </span>
+                  </div>
                   <input
                     type="range"
                     min={500}
@@ -377,9 +392,6 @@ export default function AssessPage() {
                     }
                     className="w-full"
                   />
-                  <span className="font-mono text-sm text-text text-right">
-                    {formatMoney(data.monthlyExpenses, data.currency)}
-                  </span>
                 </div>
               </div>
 
@@ -387,7 +399,7 @@ export default function AssessPage() {
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Net worth / savings range
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {SAVINGS_RANGES.map((r) => (
                     <OptionButton
                       key={r}
@@ -403,7 +415,7 @@ export default function AssessPage() {
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Work situation
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {WORK_SITUATIONS.map((w) => (
                     <OptionButton
                       key={w}
@@ -436,7 +448,7 @@ export default function AssessPage() {
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Household
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {HOUSEHOLDS.map((h) => (
                     <OptionButton
                       key={h}
@@ -550,16 +562,16 @@ export default function AssessPage() {
               {PRIORITIES.map((p) => (
                 <div
                   key={p}
-                  className="border border-border p-4 flex items-center justify-between gap-4"
+                  className="flex flex-col gap-3 border border-border p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
                 >
                   <span className="text-sm text-text flex-1">{p}</span>
-                  <div className="flex gap-1">
+                  <div className="grid grid-cols-5 gap-2 sm:flex sm:gap-1">
                     {[1, 2, 3, 4, 5].map((n) => (
                       <button
                         key={n}
                         type="button"
                         onClick={() => updatePriority(p, n)}
-                        className={`w-8 h-8 text-xs font-medium transition-all ${
+                        className={`h-11 w-full text-xs font-medium transition-all sm:h-8 sm:w-8 ${
                           data.priorities[p] === n
                             ? "bg-accent text-white"
                             : data.priorities[p] && data.priorities[p] >= n
@@ -598,7 +610,7 @@ export default function AssessPage() {
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Geographic range
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {GEO_RANGES.map((g) => (
                     <OptionButton
                       key={g}
@@ -659,7 +671,7 @@ export default function AssessPage() {
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Urban preference
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {URBAN_PREFS.map((u) => (
                     <OptionButton
                       key={u}
@@ -736,7 +748,7 @@ export default function AssessPage() {
                   How much do you want to protect income from automation or
                   market change?
                 </label>
-                <div className="flex items-center gap-4">
+                <div className="grid gap-2 sm:flex sm:items-center sm:gap-4">
                   <span className="text-xs text-text-secondary">Not at all</span>
                   <input
                     type="range"
@@ -747,7 +759,7 @@ export default function AssessPage() {
                     onChange={(e) =>
                       update({ aiWorryLevel: Number(e.target.value) })
                     }
-                    className="flex-1"
+                    className="w-full sm:flex-1"
                   />
                   <span className="text-xs text-text-secondary">Very worried</span>
                 </div>
@@ -784,7 +796,13 @@ export default function AssessPage() {
           </div>
         )}
 
-        <div className="flex items-center justify-between mt-12 pt-6 border-t border-border">
+        <div
+          className={`mt-12 flex items-center justify-between border-t border-border ${
+            keepMobileNavSticky
+              ? "sticky bottom-0 z-20 -mx-5 bg-bg/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur sm:-mx-6 sm:px-6 md:static md:mx-0 md:bg-transparent md:px-0 md:pb-0 md:pt-6 md:backdrop-blur-none"
+              : "pt-6"
+          }`}
+        >
           <button
             type="button"
             onClick={goBack}
@@ -798,10 +816,10 @@ export default function AssessPage() {
           {step < 5 ? (
             <button
               type="button"
-              disabled={!canNext()}
+              disabled={!readyForNext}
               onClick={goNext}
-              className={`px-6 py-3 text-sm font-medium transition-all ${
-                canNext()
+              className={`rounded-[8px] px-6 py-3 text-sm font-medium transition-all ${
+                readyForNext
                   ? "bg-accent text-white hover:bg-night"
                   : "bg-border text-text-secondary cursor-not-allowed"
               }`}

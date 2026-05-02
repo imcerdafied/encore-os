@@ -173,7 +173,7 @@ function RecommendationCard({
           >
             {unlockLoading
               ? "Opening checkout..."
-              : "Double-click into this path"}
+              : "Go deeper on this path"}
           </button>
         )}
 
@@ -214,11 +214,13 @@ export default function ResultsView({
   isPaid,
   onUnlock,
   unlockLoading,
+  checkoutNotice,
 }: {
   result: AssessmentResult;
   isPaid: boolean;
   onUnlock: (recommendation: Recommendation, index: number) => void;
   unlockLoading: boolean;
+  checkoutNotice?: string;
 }) {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
@@ -291,8 +293,8 @@ export default function ResultsView({
               </h1>
               <p className="mt-4 max-w-2xl leading-7 text-text-secondary">
                 Here are four possible paths from your profile. Browse the map
-                for free, then double-click into a path when you want the deeper
-                tradeoffs and next steps.
+                for free, then go deeper on a path when you want the tradeoffs
+                and next steps.
               </p>
             </div>
             <div className="rounded-[8px] border border-border bg-surface p-4">
@@ -305,6 +307,12 @@ export default function ResultsView({
             </div>
           </div>
         </header>
+
+        {checkoutNotice && (
+          <div className="mb-6 rounded-[8px] border border-accent/25 bg-[#fff3df] p-4 text-sm font-semibold leading-6 text-text shadow-soft">
+            {checkoutNotice}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {visibleRecommendations.map((rec, i) => (

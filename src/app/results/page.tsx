@@ -18,6 +18,7 @@ function ResultsContent() {
   const [error, setError] = useState("");
   const [isPaid, setIsPaid] = useState(false);
   const [unlockLoading, setUnlockLoading] = useState(false);
+  const [checkoutNotice, setCheckoutNotice] = useState("");
 
   const getToken = useCallback(() => {
     return result?.shareToken || tokenParam || "";
@@ -104,6 +105,7 @@ function ResultsContent() {
       has_token: Boolean(token),
     });
     setUnlockLoading(true);
+    setCheckoutNotice("");
     try {
       const res = await fetch("/api/create-checkout", {
         method: "POST",
@@ -124,11 +126,17 @@ function ResultsContent() {
           ...recommendationProperties,
           status: res.status,
         });
-        window.alert(data.error || "Checkout is not available yet.");
+        setCheckoutNotice(
+          data.error ||
+            "Path deep dives are almost ready. For now, you can browse and share all four scenarios for free."
+        );
       }
     } catch {
       setUnlockLoading(false);
       track("checkout_request_failed", recommendationProperties);
+      setCheckoutNotice(
+        "Path deep dives are almost ready. For now, you can browse and share all four scenarios for free."
+      );
     }
   };
 
@@ -164,6 +172,7 @@ function ResultsContent() {
       isPaid={isPaid}
       onUnlock={handleUnlock}
       unlockLoading={unlockLoading}
+      checkoutNotice={checkoutNotice}
     />
   );
 }

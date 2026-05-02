@@ -223,7 +223,7 @@ export default function Home() {
           <article className="rounded-[8px] border border-border bg-surface p-7 shadow-soft">
             <h3 className="text-2xl font-black">Path deep dive</h3>
             <p className="mt-2 text-text-secondary">
-              Double-click into one path when you want the practical details.
+              Go deeper on one path when you want the practical details.
             </p>
             <p className="mt-8 text-4xl font-black">$9</p>
             <p className="mt-1 text-sm text-text-secondary">

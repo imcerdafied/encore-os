@@ -22,7 +22,10 @@ export async function POST(req: NextRequest) {
 
     if (process.env.NODE_ENV === "production") {
       return NextResponse.json(
-        { error: "Payments are not configured" },
+        {
+          error:
+            "Path deep dives are almost ready. For now, you can browse and share all four scenarios for free.",
+        },
         { status: 503 }
       );
     }
