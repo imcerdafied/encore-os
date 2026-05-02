@@ -17,6 +17,11 @@ function buildPrompt(data: AssessmentData): string {
     .sort(([, a], [, b]) => b - a)
     .map(([k, v]) => `${k}: ${v}/5`)
     .join(", ");
+  const costPriority = data.priorities["Cost of living"] || 0;
+  const taxPriority = Math.max(
+    data.priorities["Cost of living"] || 0,
+    data.priorities["Political stability"] || 0
+  );
 
   return `You are a world-class relocation advisor with deep knowledge of global cities, cost of living, safety, healthcare, culture, climate, and the economic impacts of AI on different regions and job markets.
 
@@ -30,6 +35,13 @@ Based on the user profile below, recommend exactly 4 relocation destinations. Fo
 7. Practical next steps: visa/residency path if international, best neighborhoods, one key resource
 
 Mix: include options at different boldness levels — one "safe easy move," one "adventurous but realistic," one "surprising sleeper pick," one wildcard if appropriate.
+
+IMPORTANT COST AND TAX RULES:
+- If "Cost of living" is rated 4 or 5, the safe easy move MUST be meaningfully cheaper than the current location, preferably 10%+ cheaper. Do not make the safe move more expensive.
+- If the user has high income and high monthly expenses, still optimize for improved after-tax cash flow, not prestige or generic desirability.
+- Do not recommend a higher-tax or higher-cost place unless it is explicitly the wildcard and the headline/tradeoffs explain why the upside may justify the higher cost.
+- Avoid routing someone from a lower-tax location to a higher-tax location when cost or financial stability are top priorities, unless there is a very specific non-financial need in their profile.
+- Cost priority detected: ${costPriority}/5. Tax sensitivity proxy: ${taxPriority}/5.
 
 USER PROFILE:
 - Current location: ${data.currentCity}
@@ -124,9 +136,9 @@ export async function POST(request: NextRequest) {
       id,
       shareToken,
       inputs: data,
-      recommendations,
+      recommendations: recommendations.slice(0, 1),
       totalRecommendations: recommendations.length,
-      paid: true,
+      paid: false,
       createdAt: new Date().toISOString(),
     });
   } catch (err) {

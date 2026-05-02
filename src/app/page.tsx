@@ -3,7 +3,7 @@ import Link from "next/link";
 const signals = [
   ["847", "life and market signals"],
   ["4", "next-chapter paths"],
-  ["$0", "full report during beta"],
+  ["$0", "beta preview"],
 ];
 
 const steps = [
@@ -33,12 +33,13 @@ const reportHighlights = [
 
 const included = [
   "Full 5-minute assessment",
-  "All 4 recommendation archetypes",
-  "Cost and AI resilience analysis",
+  "One fully detailed recommendation",
+  "Cost, tax, and AI resilience signals",
   "Tradeoffs and practical next steps",
 ];
 
 const laterIncluded = [
+  "All 4 recommendation archetypes",
   "Deep-dive city reports",
   "Unlimited reassessments",
   "Shareable results link",
@@ -61,7 +62,7 @@ export default function Home() {
               href="#pricing"
               className="hidden rounded-[8px] border border-white/25 px-4 py-2 text-sm text-white/80 transition hover:border-white/50 hover:text-white sm:inline-flex"
             >
-              Free beta
+              Beta preview
             </a>
             <Link
               href="/assess"
@@ -85,7 +86,8 @@ export default function Home() {
             seriously.
           </p>
           <p className="mt-5 inline-flex rounded-[8px] border border-gold/40 bg-gold/15 px-4 py-3 text-sm font-bold text-white">
-            Limited beta: the full 4-path report is free right now.
+            Limited beta: your first fully detailed path is free while we tune
+            recommendation quality.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -191,13 +193,15 @@ export default function Home() {
 
       <section id="pricing" className="mx-auto max-w-6xl px-6 py-20">
         <div className="mb-10 max-w-2xl">
-          <p className="font-mono text-xs uppercase text-accent">free beta</p>
+          <p className="font-mono text-xs uppercase text-accent">
+            beta preview
+          </p>
           <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-            Full reports are free during this limited beta.
+            Start with one carefully reasoned path.
           </h2>
           <p className="mt-5 text-text-secondary">
-            We are opening the complete Encore OS report while the product is
-            being tested. No checkout required for now.
+            During beta, Encore OS gives you the top recommendation for free
+            while we keep improving the full four-path report.
           </p>
         </div>
 
@@ -206,13 +210,13 @@ export default function Home() {
             <div className="inline-flex rounded-[8px] bg-accent px-3 py-1 font-mono text-xs text-white">
               limited beta
             </div>
-            <h3 className="mt-5 text-2xl font-black">Full report free</h3>
+            <h3 className="mt-5 text-2xl font-black">Beta preview</h3>
             <p className="mt-2 text-text-secondary">
-              All recommendations are unlocked while Encore OS is in beta.
+              Your top path is free while the product is in active testing.
             </p>
             <p className="mt-8 text-4xl font-black">$0</p>
             <p className="mt-1 text-sm text-text-secondary">
-              no card needed during beta
+              no card needed
             </p>
             <ul className="mt-6 space-y-3">
               {included.map((item) => (
@@ -226,14 +230,14 @@ export default function Home() {
               href="/assess"
               className="mt-8 inline-flex w-full justify-center rounded-[8px] bg-text px-5 py-3 text-sm font-bold text-white transition hover:bg-night"
             >
-              Get the full report
+              Start the preview
             </Link>
           </article>
 
           <article className="rounded-[8px] border border-border bg-surface p-7 shadow-soft">
-            <h3 className="text-2xl font-black">After beta</h3>
+            <h3 className="text-2xl font-black">Full report</h3>
             <p className="mt-2 text-text-secondary">
-              Paid plans may return later as the report gets deeper.
+              The full four-path comparison will return after beta tuning.
             </p>
             <p className="mt-8 text-4xl font-black">$29</p>
             <p className="mt-1 text-sm text-text-secondary">
