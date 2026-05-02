@@ -124,9 +124,9 @@ export async function POST(request: NextRequest) {
       id,
       shareToken,
       inputs: data,
-      recommendations: recommendations.slice(0, 1),
+      recommendations,
       totalRecommendations: recommendations.length,
-      paid: false,
+      paid: true,
       createdAt: new Date().toISOString(),
     });
   } catch (err) {

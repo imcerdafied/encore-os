@@ -3,7 +3,7 @@ import Link from "next/link";
 const signals = [
   ["847", "life and market signals"],
   ["4", "next-chapter paths"],
-  ["$29", "full report"],
+  ["$0", "full report during beta"],
 ];
 
 const steps = [
@@ -33,12 +33,12 @@ const reportHighlights = [
 
 const included = [
   "Full 5-minute assessment",
-  "One top recommendation",
-  "Core cost comparison",
+  "All 4 recommendation archetypes",
+  "Cost and AI resilience analysis",
+  "Tradeoffs and practical next steps",
 ];
 
-const proIncluded = [
-  "All 4 recommendation archetypes",
+const laterIncluded = [
   "Deep-dive city reports",
   "Unlimited reassessments",
   "Shareable results link",
@@ -61,7 +61,7 @@ export default function Home() {
               href="#pricing"
               className="hidden rounded-[8px] border border-white/25 px-4 py-2 text-sm text-white/80 transition hover:border-white/50 hover:text-white sm:inline-flex"
             >
-              Pricing
+              Free beta
             </a>
             <Link
               href="/assess"
@@ -83,6 +83,9 @@ export default function Home() {
             Encore OS turns your finances, household, priorities, and AI-era
             career outlook into a practical shortlist of places worth taking
             seriously.
+          </p>
+          <p className="mt-5 inline-flex rounded-[8px] border border-gold/40 bg-gold/15 px-4 py-3 text-sm font-bold text-white">
+            Limited beta: the full 4-path report is free right now.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -188,19 +191,29 @@ export default function Home() {
 
       <section id="pricing" className="mx-auto max-w-6xl px-6 py-20">
         <div className="mb-10 max-w-2xl">
-          <p className="font-mono text-xs uppercase text-accent">pricing</p>
+          <p className="font-mono text-xs uppercase text-accent">free beta</p>
           <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-            Start free. Upgrade when you want the full map.
+            Full reports are free during this limited beta.
           </h2>
+          <p className="mt-5 text-text-secondary">
+            We are opening the complete Encore OS report while the product is
+            being tested. No checkout required for now.
+          </p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2">
-          <article className="rounded-[8px] border border-border bg-surface p-7 shadow-soft">
-            <h3 className="text-2xl font-black">Free</h3>
+          <article className="rounded-[8px] border border-accent bg-[#fff3df] p-7 shadow-soft">
+            <div className="inline-flex rounded-[8px] bg-accent px-3 py-1 font-mono text-xs text-white">
+              limited beta
+            </div>
+            <h3 className="mt-5 text-2xl font-black">Full report free</h3>
             <p className="mt-2 text-text-secondary">
-              A serious first read on your best-fit move.
+              All recommendations are unlocked while Encore OS is in beta.
             </p>
             <p className="mt-8 text-4xl font-black">$0</p>
+            <p className="mt-1 text-sm text-text-secondary">
+              no card needed during beta
+            </p>
             <ul className="mt-6 space-y-3">
               {included.map((item) => (
                 <li key={item} className="flex gap-3 text-sm">
@@ -211,38 +224,32 @@ export default function Home() {
             </ul>
             <Link
               href="/assess"
-              className="mt-8 inline-flex w-full justify-center rounded-[8px] border border-text px-5 py-3 text-sm font-bold transition hover:bg-text hover:text-white"
-            >
-              Start free
-            </Link>
-          </article>
-
-          <article className="rounded-[8px] border border-accent bg-[#fff3df] p-7 shadow-soft">
-            <div className="inline-flex rounded-[8px] bg-accent px-3 py-1 font-mono text-xs text-white">
-              popular
-            </div>
-            <h3 className="mt-5 text-2xl font-black">Encore Pro</h3>
-            <p className="mt-2 text-text-secondary">
-              The complete four-path relocation report.
-            </p>
-            <p className="mt-8 text-4xl font-black">$29</p>
-            <p className="mt-1 text-sm text-text-secondary">
-              one-time purchase
-            </p>
-            <ul className="mt-6 space-y-3">
-              {proIncluded.map((item) => (
-                <li key={item} className="flex gap-3 text-sm">
-                  <span className="text-accent">+</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/assess"
               className="mt-8 inline-flex w-full justify-center rounded-[8px] bg-text px-5 py-3 text-sm font-bold text-white transition hover:bg-night"
             >
               Get the full report
             </Link>
+          </article>
+
+          <article className="rounded-[8px] border border-border bg-surface p-7 shadow-soft">
+            <h3 className="text-2xl font-black">After beta</h3>
+            <p className="mt-2 text-text-secondary">
+              Paid plans may return later as the report gets deeper.
+            </p>
+            <p className="mt-8 text-4xl font-black">$29</p>
+            <p className="mt-1 text-sm text-text-secondary">
+              planned one-time purchase
+            </p>
+            <ul className="mt-6 space-y-3">
+              {laterIncluded.map((item) => (
+                <li key={item} className="flex gap-3 text-sm">
+                  <span className="text-teal">+</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-8 rounded-[8px] border border-border px-5 py-3 text-center text-sm font-bold text-text-secondary">
+              Not active during beta
+            </p>
           </article>
         </div>
       </section>

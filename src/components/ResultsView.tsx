@@ -11,8 +11,6 @@ const archetypeLabel: Record<string, string> = {
   wildcard: "Wildcard",
 };
 
-const lockedLabels = ["Adventurous", "Sleeper pick", "Wildcard"];
-
 function AiScoreGauge({ score }: { score: number }) {
   const bounded = Math.max(0, Math.min(10, score));
 
@@ -162,69 +160,8 @@ function RecommendationCard({
   );
 }
 
-function LockedRecommendationCard({ index }: { index: number }) {
-  const label = lockedLabels[index % lockedLabels.length];
-
-  return (
-    <article className="rounded-[8px] border border-dashed border-border bg-surface p-6 shadow-soft">
-      <p className="font-mono text-xs uppercase text-text-secondary">
-        {label}
-      </p>
-      <div className="mt-10 space-y-4">
-        <div className="h-7 w-2/3 rounded-full bg-bg-subtle" />
-        <div className="h-3 w-full rounded-full bg-bg-subtle" />
-        <div className="h-3 w-5/6 rounded-full bg-bg-subtle" />
-      </div>
-      <div className="mt-10 rounded-[8px] bg-night p-5 text-white">
-        <p className="text-sm font-bold">Unlock the remaining paths</p>
-        <p className="mt-2 text-sm leading-6 text-white/68">
-          The paid report reveals the full city shortlist without exposing the
-          locked analysis in the browser.
-        </p>
-      </div>
-    </article>
-  );
-}
-
-function UpgradeCTA({
-  onUnlock,
-  loading,
-}: {
-  onUnlock: () => void;
-  loading: boolean;
-}) {
-  return (
-    <section className="mt-16 rounded-[8px] border border-accent bg-[#fff3df] p-8 shadow-soft md:p-10">
-      <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
-        <div>
-          <p className="font-mono text-xs uppercase text-accent">
-            encore pro
-          </p>
-          <h2 className="mt-3 text-3xl font-black text-text">
-            See all 4 recommendations
-          </h2>
-          <p className="mt-3 max-w-2xl leading-7 text-text-secondary">
-            Your full analysis includes the safe move, the bolder move, the
-            sleeper pick, and the wildcard - each with tradeoffs and next steps.
-          </p>
-        </div>
-        <button
-          onClick={onUnlock}
-          disabled={loading}
-          className="rounded-[8px] bg-text px-7 py-4 text-sm font-bold text-white transition hover:bg-night disabled:opacity-50"
-        >
-          {loading ? "Redirecting..." : "Unlock for $29"}
-        </button>
-      </div>
-    </section>
-  );
-}
-
 export default function ResultsView({
   result,
-  isPaid,
-  onUnlock,
-  unlockLoading,
 }: {
   result: AssessmentResult;
   isPaid: boolean;
@@ -236,12 +173,7 @@ export default function ResultsView({
   const [emailLoading, setEmailLoading] = useState(false);
   const totalRecommendations =
     result.totalRecommendations || result.recommendations.length;
-  const visibleRecommendations = isPaid
-    ? result.recommendations
-    : result.recommendations.slice(0, 1);
-  const lockedCount = isPaid
-    ? 0
-    : Math.max(0, totalRecommendations - visibleRecommendations.length);
+  const visibleRecommendations = result.recommendations;
 
   const handleEmailCapture = async () => {
     if (!email.includes("@")) return;
@@ -266,16 +198,14 @@ export default function ResultsView({
           encore-os
         </Link>
         <div className="flex items-center gap-3">
-          {isPaid && (
-            <span className="rounded-[8px] bg-teal px-3 py-1 font-mono text-xs text-white">
-              pro
-            </span>
-          )}
+          <span className="rounded-[8px] bg-teal px-3 py-1 font-mono text-xs text-white">
+            free beta
+          </span>
           <Link
             href="/assess"
             className="rounded-[8px] border border-border px-4 py-2 text-sm font-semibold text-text-secondary transition hover:border-text hover:text-text"
           >
-            {isPaid ? "Reassess" : "Retake"}
+            Reassess
           </Link>
         </div>
       </nav>
@@ -288,12 +218,12 @@ export default function ResultsView({
           <div className="mt-5 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
             <div>
               <h1 className="text-4xl font-black md:text-6xl">
-                {isPaid ? "Your next four chapters." : "Your next chapter."}
+                Your next four chapters.
               </h1>
               <p className="mt-4 max-w-2xl leading-7 text-white/68">
-                {isPaid
-                  ? "The full set of recommendations is unlocked for comparison."
-                  : "Your best-fit path is visible now. The remaining recommendations stay server-side until checkout is complete."}
+                Limited beta access is active, so the full recommendation set is
+                free right now. Compare all four paths before you decide what to
+                investigate next.
               </p>
             </div>
             <div className="rounded-[8px] border border-white/14 bg-white/8 p-4">
@@ -309,14 +239,7 @@ export default function ResultsView({
           {visibleRecommendations.map((rec, i) => (
             <RecommendationCard key={`${rec.city}-${i}`} rec={rec} index={i} />
           ))}
-          {Array.from({ length: lockedCount }, (_, i) => (
-            <LockedRecommendationCard key={i} index={i} />
-          ))}
         </div>
-
-        {!isPaid && (
-          <UpgradeCTA onUnlock={onUnlock} loading={unlockLoading} />
-        )}
 
         <section className="mx-auto mt-16 max-w-xl rounded-[8px] border border-border bg-surface p-6 text-center shadow-soft">
           {!emailSent ? (

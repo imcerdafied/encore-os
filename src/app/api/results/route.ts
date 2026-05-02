@@ -32,13 +32,13 @@ export async function GET(request: NextRequest) {
     const recommendations = Array.isArray(data.results_json)
       ? data.results_json
       : [];
-    const paid = Boolean(data.paid);
+    const paid = true;
 
     return NextResponse.json({
       id: data.id,
       shareToken: data.share_token,
       inputs: data.inputs_json,
-      recommendations: paid ? recommendations : recommendations.slice(0, 1),
+      recommendations,
       totalRecommendations: recommendations.length,
       paid,
       createdAt: data.created_at,
