@@ -317,8 +317,11 @@ export default function ResultsView({
   };
 
   return (
-    <main className="min-h-screen bg-bg text-text">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+    <main className="relative min-h-screen overflow-hidden bg-bg text-text">
+      <div className="pointer-events-none absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-top opacity-14" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(251,247,239,0.98)_0%,rgba(251,247,239,0.92)_48%,rgba(234,247,244,0.74)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(198,90,50,0.18)_0%,rgba(198,90,50,0)_32%)]" />
+      <nav className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <Link href="/" className="font-mono text-sm text-text">
           encore-os
         </Link>
@@ -328,15 +331,18 @@ export default function ResultsView({
           </span>
           <Link
             href="/assess"
-            className="rounded-[8px] border border-border px-4 py-2 text-sm font-semibold text-text-secondary transition hover:border-text hover:text-text"
+            className="rounded-[8px] border border-accent/25 bg-surface/70 px-4 py-2 text-sm font-semibold text-text-secondary shadow-soft transition hover:border-accent hover:bg-[#fff3df] hover:text-text"
           >
-            Reassess
+            Explore again
           </Link>
         </div>
       </nav>
 
-      <div className="mx-auto max-w-6xl px-6 pb-16 pt-8">
-        <header className="mb-10 rounded-[8px] border border-accent/20 bg-[linear-gradient(135deg,#fff7e8_0%,#fffaf2_48%,#eaf7f4_100%)] p-8 text-text shadow-soft md:p-10">
+      <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-8">
+        <header className="relative mb-10 overflow-hidden rounded-[8px] border border-accent/20 bg-[linear-gradient(135deg,#fff7e8_0%,#fffaf2_48%,#eaf7f4_100%)] p-8 text-text shadow-soft md:p-10">
+          <div className="absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-center opacity-16" />
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,247,232,0.94)_0%,rgba(255,250,242,0.86)_52%,rgba(234,247,244,0.78)_100%)]" />
+          <div className="relative">
           <p className="font-mono text-xs uppercase text-accent">
             your relocation report
           </p>
@@ -359,6 +365,7 @@ export default function ResultsView({
                 {visibleRecommendations.length}/{totalRecommendations}
               </p>
             </div>
+          </div>
           </div>
         </header>
 
@@ -402,7 +409,7 @@ export default function ResultsView({
                 <button
                   onClick={handleEmailCapture}
                   disabled={emailLoading || !email.includes("@")}
-                  className="h-12 rounded-[8px] bg-text px-6 text-sm font-bold text-white transition hover:bg-night disabled:opacity-50"
+                  className="h-12 rounded-[8px] bg-accent px-6 text-sm font-bold text-white shadow-soft transition hover:bg-accent-dark disabled:opacity-50"
                 >
                   {emailLoading ? "Saving..." : "Save"}
                 </button>

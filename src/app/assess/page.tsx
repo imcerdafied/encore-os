@@ -233,21 +233,23 @@ export default function AssessPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-bg flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-6">
-          <div className="w-12 h-12 border-2 border-border border-t-text rounded-full animate-spin mx-auto mb-8" />
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-bg">
+        <div className="absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-center opacity-18" />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(251,247,239,0.95)_0%,rgba(255,243,223,0.86)_48%,rgba(234,247,244,0.9)_100%)]" />
+        <div className="relative mx-auto max-w-md px-6 text-center">
+          <div className="mx-auto mb-8 h-12 w-12 animate-spin rounded-full border-2 border-border border-t-accent" />
           <h2 className="text-2xl font-black text-text mb-3">
-            Finding your next chapter
+            Mapping what could be next
           </h2>
           <p className="text-text-secondary text-sm mb-8">
-            Looking for a place that fits your life...
+            Looking for places that fit the life you are building.
           </p>
           <div className="w-full bg-bg-subtle h-1 overflow-hidden rounded-full">
-            <div className="h-full bg-accent loading-bar" />
+            <div className="h-full bg-[linear-gradient(90deg,var(--accent),var(--gold),var(--teal))] loading-bar" />
           </div>
           <div className="mt-8 text-text-secondary text-xs">
             <p className="animate-pulse">
-              Weighing cost, care, work, and everyday rhythm...
+              Weighing cost, care, work, and everyday rhythm.
             </p>
           </div>
         </div>
@@ -256,16 +258,19 @@ export default function AssessPage() {
   }
 
   return (
-    <main className="min-h-screen bg-bg">
+    <main className="relative min-h-screen overflow-hidden bg-bg">
+      <div className="pointer-events-none absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-top opacity-14" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(251,247,239,0.98)_0%,rgba(251,247,239,0.92)_48%,rgba(234,247,244,0.72)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(201,162,79,0.18)_0%,rgba(201,162,79,0)_30%)]" />
       {/* Progress bar */}
-      <div className="h-1 bg-border">
+      <div className="relative h-1 bg-border">
         <div
-          className="h-full bg-accent transition-all duration-500"
+          className="h-full bg-[linear-gradient(90deg,var(--accent),var(--gold),var(--teal))] transition-all duration-500"
           style={{ width: progressWidth }}
         />
       </div>
 
-      <nav className="flex items-center justify-between px-6 py-5 max-w-3xl mx-auto">
+      <nav className="relative mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
         <Link href="/" className="font-mono text-sm text-text">
           encore-os
         </Link>
@@ -274,7 +279,7 @@ export default function AssessPage() {
         </span>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-5 py-6 sm:px-6 sm:py-8">
+      <div className="relative mx-auto max-w-3xl px-5 py-6 sm:px-6 sm:py-8">
         {/* Step 1: Where you are now */}
         {step === 1 && (
           <div className="animate-fade-in">
@@ -285,8 +290,8 @@ export default function AssessPage() {
               Where you are now
             </h2>
             <p className="text-text-secondary mb-10">
-              Tell us about your current situation so we can find somewhere
-              better.
+              Tell us where life starts today so we can imagine better-fit
+              possibilities from there.
             </p>
 
             <div className="space-y-8">
@@ -554,8 +559,8 @@ export default function AssessPage() {
               What matters most
             </h2>
             <p className="text-text-secondary mb-10">
-              Rate each factor from 1 (not important) to 5 (essential). Select
-              at least 3.
+              Give weight to the things that would make a new place feel like
+              a real upgrade. Select at least 3.
             </p>
 
             <div className="space-y-3">
@@ -725,8 +730,8 @@ export default function AssessPage() {
               Work and opportunity
             </h2>
             <p className="text-text-secondary mb-10">
-              Optional but powerful. This helps us factor in income and career
-              resilience.
+              Optional but powerful. This helps us spot places where your work
+              life has room to expand.
             </p>
 
             <div className="space-y-8">
@@ -810,7 +815,7 @@ export default function AssessPage() {
               step === 1 ? "invisible" : ""
             }`}
           >
-            &larr; Back
+            Previous
           </button>
 
           {step < 5 ? (
@@ -820,19 +825,19 @@ export default function AssessPage() {
               onClick={goNext}
               className={`rounded-[8px] px-6 py-3 text-sm font-medium transition-all ${
                 readyForNext
-                  ? "bg-accent text-white hover:bg-night"
+                  ? "bg-accent text-white shadow-soft hover:bg-accent-dark"
                   : "bg-border text-text-secondary cursor-not-allowed"
               }`}
             >
-              Continue &rarr;
+              Next step
             </button>
           ) : (
             <button
               type="button"
               onClick={handleSubmit}
-              className="rounded-[8px] px-8 py-3 text-sm font-medium bg-accent text-white hover:bg-night transition-all"
+              className="rounded-[8px] bg-accent px-8 py-3 text-sm font-bold text-white shadow-soft transition-all hover:bg-accent-dark"
             >
-              Find My Next Chapter &rarr;
+              Show my paths
             </button>
           )}
         </div>

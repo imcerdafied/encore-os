@@ -20,10 +20,10 @@ const steps = [
 ];
 
 const reportHighlights = [
-  "Cost delta vs. current city",
-  "Career resilience notes",
+  "What feels possible there",
+  "Cost delta vs. today",
+  "Career and lifestyle signals",
   "Neighborhood and visa prompts",
-  "Honest tradeoffs before the honeymoon phase",
 ];
 
 const included = [
@@ -44,9 +44,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-bg text-text">
       <section className="relative overflow-hidden bg-bg text-text">
-        <div className="absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-center opacity-60" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(251,247,239,0.97)_0%,rgba(251,247,239,0.9)_44%,rgba(251,247,239,0.42)_100%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_55%,rgba(198,90,50,0.24)_0%,rgba(198,90,50,0)_34%)]" />
+        <div className="absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-center opacity-80" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(251,247,239,0.96)_0%,rgba(251,247,239,0.78)_48%,rgba(251,247,239,0.18)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_52%,rgba(198,90,50,0.32)_0%,rgba(201,162,79,0.18)_24%,rgba(198,90,50,0)_44%)]" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(251,247,239,0)_0%,rgba(251,247,239,1)_100%)]" />
 
         <nav className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
@@ -89,13 +89,13 @@ export default function Home() {
               href="/assess"
               eventName="landing_cta_clicked"
               eventProperties={{ cta: "hero_start_assessment" }}
-              className="rounded-[8px] bg-text px-6 py-4 text-center text-sm font-bold text-white transition hover:bg-night"
+              className="rounded-[8px] bg-accent px-6 py-4 text-center text-sm font-bold text-white shadow-soft transition hover:bg-accent-dark"
             >
-              Start the assessment
+              Explore your next chapter
             </AnalyticsLink>
             <a
               href="#how-it-works"
-              className="rounded-[8px] border border-text/25 bg-surface/60 px-6 py-4 text-center text-sm font-bold text-text transition hover:border-text/45 hover:bg-surface"
+              className="rounded-[8px] border border-accent/30 bg-surface/70 px-6 py-4 text-center text-sm font-bold text-text shadow-soft transition hover:border-accent hover:bg-[#fff3df]"
             >
               See how it works
             </a>
@@ -135,29 +135,32 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-night px-6 py-20 text-white">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <section className="relative overflow-hidden px-6 py-20 text-text">
+        <div className="absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-center opacity-20" />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,243,223,0.96)_0%,rgba(251,247,239,0.9)_46%,rgba(234,247,244,0.92)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_26%,rgba(15,139,141,0.16)_0%,rgba(15,139,141,0)_32%)]" />
+        <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
-            <p className="font-mono text-xs uppercase text-gold">
+            <p className="font-mono text-xs uppercase text-accent">
               inside the report
             </p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-              Recommendations that show the catch before you fall in love.
+              Recommendations with a little spark and a lot of practical sense.
             </h2>
-            <p className="mt-5 max-w-2xl text-white/68">
-              Each destination is framed as a different risk posture: safe move,
-              adventurous but realistic, sleeper pick, and wildcard.
+            <p className="mt-5 max-w-2xl text-text-secondary">
+              Each destination gives you a distinct kind of possibility: the
+              easy yes, the stretch, the sleeper pick, and the wildcard.
             </p>
           </div>
 
-          <div className="rounded-[8px] border border-white/14 bg-white/8 p-6 shadow-soft backdrop-blur">
-            <div className="flex items-start justify-between border-b border-white/12 pb-5">
+          <div className="rounded-[8px] border border-accent/20 bg-surface/82 p-6 shadow-soft backdrop-blur">
+            <div className="flex items-start justify-between border-b border-border pb-5">
               <div>
-                <p className="font-mono text-xs text-white/54">
+                <p className="font-mono text-xs text-text-secondary">
                   sample destination
                 </p>
                 <h3 className="mt-2 text-3xl font-black">Lisbon</h3>
-                <p className="text-sm text-white/62">Portugal</p>
+                <p className="text-sm text-text-secondary">Portugal</p>
               </div>
               <div className="rounded-[8px] bg-teal px-3 py-2 text-sm font-bold text-white">
                 8/10
@@ -167,7 +170,7 @@ export default function Home() {
               {reportHighlights.map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm">
                   <span className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-gold" />
-                  <span className="text-white/76">{item}</span>
+                  <span className="text-text-secondary">{item}</span>
                 </li>
               ))}
             </ul>
@@ -214,7 +217,7 @@ export default function Home() {
               href="/assess"
               eventName="landing_cta_clicked"
               eventProperties={{ cta: "pricing_start_preview" }}
-              className="mt-8 inline-flex w-full justify-center rounded-[8px] bg-text px-5 py-3 text-sm font-bold text-white transition hover:bg-night"
+              className="mt-8 inline-flex w-full justify-center rounded-[8px] bg-accent px-5 py-3 text-sm font-bold text-white shadow-soft transition hover:bg-accent-dark"
             >
               Start the preview
             </AnalyticsLink>
