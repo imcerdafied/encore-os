@@ -1,32 +1,26 @@
 import Link from "next/link";
 
-const signals = [
-  ["847", "life and market signals"],
-  ["4", "next-chapter paths"],
-  ["$0", "beta preview"],
-];
-
 const steps = [
   {
     number: "01",
     title: "Map the life you actually have",
-    body: "Income, family, work constraints, fears, climate preferences, healthcare needs, and appetite for change all go into the model.",
+    body: "Tell us about money, family, work, health, climate, and what would make daily life feel better.",
   },
   {
     number: "02",
-    title: "Weigh places against your tradeoffs",
-    body: "Encore OS compares cost, resilience, stability, culture, and practical move paths instead of handing you a generic city list.",
+    title: "Look for places with room to grow",
+    body: "Encore OS weighs cost, taxes, stability, culture, and practical move paths around the life you want next.",
   },
   {
     number: "03",
-    title: "Leave with an actionable shortlist",
-    body: "Each recommendation explains the upside, the catch, and the next concrete move to validate it in real life.",
+    title: "Leave with a path you can test",
+    body: "Your result explains the upside, the catch, and the next concrete move to validate it in real life.",
   },
 ];
 
 const reportHighlights = [
   "Cost delta vs. current city",
-  "AI economy resilience score",
+  "Career resilience notes",
   "Neighborhood and visa prompts",
   "Honest tradeoffs before the honeymoon phase",
 ];
@@ -34,7 +28,7 @@ const reportHighlights = [
 const included = [
   "Full 5-minute assessment",
   "One fully detailed recommendation",
-  "Cost, tax, and AI resilience signals",
+  "Cost, tax, and career resilience notes",
   "Tradeoffs and practical next steps",
 ];
 
@@ -48,19 +42,20 @@ const laterIncluded = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-bg text-text">
-      <section className="relative min-h-[88vh] overflow-hidden bg-night text-white">
-        <div className="absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-center" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(16,20,31,0.98)_0%,rgba(16,20,31,0.86)_38%,rgba(16,20,31,0.34)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(16,20,31,0)_0%,rgba(251,247,239,1)_100%)]" />
+      <section className="relative min-h-[88vh] overflow-hidden bg-bg text-text">
+        <div className="absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-center opacity-60" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(251,247,239,0.97)_0%,rgba(251,247,239,0.9)_44%,rgba(251,247,239,0.42)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_55%,rgba(198,90,50,0.24)_0%,rgba(198,90,50,0)_34%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(251,247,239,0)_0%,rgba(251,247,239,1)_100%)]" />
 
         <nav className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-          <Link href="/" className="font-mono text-sm text-white">
+          <Link href="/" className="font-mono text-sm text-text">
             encore-os
           </Link>
           <div className="flex items-center gap-3">
             <a
               href="#pricing"
-              className="hidden rounded-[8px] border border-white/25 px-4 py-2 text-sm text-white/80 transition hover:border-white/50 hover:text-white sm:inline-flex"
+              className="hidden rounded-[8px] border border-text/20 bg-surface/60 px-4 py-2 text-sm text-text-secondary transition hover:border-text/40 hover:text-text sm:inline-flex"
             >
               Beta preview
             </a>
@@ -74,48 +69,45 @@ export default function Home() {
         </nav>
 
         <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-6 pb-24 pt-16 md:pb-28 md:pt-28">
-          <p className="mb-5 max-w-xl font-mono text-xs uppercase text-white/70">
-            relocation intelligence for uncertain times
+          <p className="mb-5 max-w-xl font-mono text-xs uppercase text-accent">
+            a warmer way to choose what comes next
           </p>
-          <h1 className="max-w-4xl text-5xl font-black leading-[1.02] text-white md:text-7xl">
-            AI relocation advisor for your next chapter.
+          <h1 className="max-w-4xl text-5xl font-black leading-[1.02] text-text md:text-7xl">
+            Find the place that fits the life you are building.
           </h1>
-          <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78">
-            Encore OS turns your finances, household, priorities, and AI-era
-            career outlook into a practical shortlist of places worth taking
-            seriously.
+          <p className="mt-7 max-w-2xl text-lg leading-8 text-text-secondary">
+            Encore OS helps you weigh money, family, work, climate, and everyday
+            joy so your next move feels considered, hopeful, and real.
           </p>
-          <p className="mt-5 inline-flex rounded-[8px] border border-gold/40 bg-gold/15 px-4 py-3 text-sm font-bold text-white">
-            Limited beta: your first fully detailed path is free while we tune
-            recommendation quality.
+          <p className="mt-5 inline-flex max-w-3xl rounded-[8px] border border-accent/25 bg-[#fff3df]/90 px-4 py-3 text-sm font-bold text-text shadow-soft">
+            Beta preview: start with one thoughtful path, free while we learn
+            with early users.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/assess"
-              className="rounded-[8px] bg-white px-6 py-4 text-center text-sm font-bold text-night transition hover:bg-bg-subtle"
+              className="rounded-[8px] bg-text px-6 py-4 text-center text-sm font-bold text-white transition hover:bg-night"
             >
               Start the assessment
             </Link>
             <a
               href="#how-it-works"
-              className="rounded-[8px] border border-white/30 px-6 py-4 text-center text-sm font-bold text-white transition hover:border-white/60 hover:bg-white/10"
+              className="rounded-[8px] border border-text/25 bg-surface/60 px-6 py-4 text-center text-sm font-bold text-text transition hover:border-text/45 hover:bg-surface"
             >
-              See the method
+              See how it works
             </a>
           </div>
 
-          <dl className="mt-16 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
-            {signals.map(([value, label]) => (
-              <div
-                key={label}
-                className="rounded-[8px] border border-white/16 bg-white/10 p-4 backdrop-blur"
-              >
-                <dt className="text-3xl font-black text-white">{value}</dt>
-                <dd className="mt-1 text-sm text-white/68">{label}</dd>
-              </div>
-            ))}
-          </dl>
+          <div className="mt-16 max-w-2xl border-l-2 border-accent/50 pl-5">
+            <p className="text-sm font-bold text-text">
+              Built for the question behind the spreadsheet:
+            </p>
+            <p className="mt-2 text-lg leading-8 text-text-secondary">
+              Where would life feel lighter, more expansive, and still make
+              practical sense?
+            </p>
+          </div>
         </div>
       </section>
 

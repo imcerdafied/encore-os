@@ -153,13 +153,15 @@ export default function AssessPage() {
             Finding your next chapter
           </h2>
           <p className="text-text-secondary text-sm mb-8">
-            Analyzing 847 factors for your situation...
+            Looking for a place that fits your life...
           </p>
           <div className="w-full bg-bg-subtle h-1 overflow-hidden rounded-full">
             <div className="h-full bg-accent loading-bar" />
           </div>
           <div className="mt-8 text-text-secondary text-xs">
-            <p className="animate-pulse">Evaluating cost of living data...</p>
+            <p className="animate-pulse">
+              Weighing cost, care, work, and everyday rhythm...
+            </p>
           </div>
         </div>
       </main>
