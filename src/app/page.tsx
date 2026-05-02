@@ -1,5 +1,5 @@
-import Link from "next/link";
 import AnalyticsLink from "@/components/AnalyticsLink";
+import BrandLockup from "@/components/BrandLockup";
 
 const steps = [
   {
@@ -50,9 +50,7 @@ export default function Home() {
         <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(251,247,239,0)_0%,rgba(251,247,239,1)_100%)]" />
 
         <nav className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-          <Link href="/" className="font-mono text-sm text-text">
-            encore-os
-          </Link>
+          <BrandLockup />
           <div className="flex items-center gap-3">
             <a
               href="#pricing"

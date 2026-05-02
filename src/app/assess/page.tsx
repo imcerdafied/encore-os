@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { AssessmentData, defaultAssessment } from "@/lib/types";
 import { identify, track } from "@/lib/analytics";
 import { getAssessmentAnalyticsProperties } from "@/lib/analytics-events";
-import Link from "next/link";
+import BrandLockup from "@/components/BrandLockup";
 
 const PRIORITIES = [
   "Cost of living",
@@ -271,9 +271,7 @@ export default function AssessPage() {
       </div>
 
       <nav className="relative mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
-        <Link href="/" className="font-mono text-sm text-text">
-          encore-os
-        </Link>
+        <BrandLockup />
         <span className="rounded-[8px] bg-surface px-3 py-1 font-mono text-xs text-text-secondary">
           Step {step} of 5
         </span>

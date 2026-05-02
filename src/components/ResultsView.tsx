@@ -8,6 +8,7 @@ import {
   getResultAnalyticsProperties,
 } from "@/lib/analytics-events";
 import Link from "next/link";
+import BrandLockup from "@/components/BrandLockup";
 
 const archetypeLabel: Record<string, string> = {
   "safe-move": "Safe move",
@@ -322,11 +323,9 @@ export default function ResultsView({
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(251,247,239,0.98)_0%,rgba(251,247,239,0.92)_48%,rgba(234,247,244,0.74)_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(198,90,50,0.18)_0%,rgba(198,90,50,0)_32%)]" />
       <nav className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <Link href="/" className="font-mono text-sm text-text">
-          encore-os
-        </Link>
+        <BrandLockup />
         <div className="flex items-center gap-3">
-          <span className="rounded-[8px] bg-accent px-3 py-1 font-mono text-xs text-white">
+          <span className="hidden rounded-[8px] bg-accent px-3 py-1 font-mono text-xs text-white sm:inline-flex">
             scenario view
           </span>
           <Link
