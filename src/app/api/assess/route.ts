@@ -7,6 +7,27 @@ import { getAssessmentAnalyticsProperties } from "@/lib/analytics-events";
 import { captureServerEvent } from "@/lib/posthog-server";
 import { checkRateLimit, getRateLimitKey } from "@/lib/rate-limit";
 
+const DEFAULT_ASSESSMENT_RATE_LIMIT = 20;
+const DEFAULT_ASSESSMENT_RATE_WINDOW_MS = 15 * 60 * 1000;
+
+function getPositiveNumberEnv(name: string, fallback: number) {
+  const value = Number(process.env[name]);
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function getAssessmentRateLimitOptions() {
+  return {
+    limit: getPositiveNumberEnv(
+      "ASSESS_RATE_LIMIT_MAX",
+      DEFAULT_ASSESSMENT_RATE_LIMIT
+    ),
+    windowMs: getPositiveNumberEnv(
+      "ASSESS_RATE_LIMIT_WINDOW_MS",
+      DEFAULT_ASSESSMENT_RATE_WINDOW_MS
+    ),
+  };
+}
+
 function getOpenAI() {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -214,29 +235,6 @@ function stripDeepDive(recommendations: Recommendation[]) {
 
 export async function POST(request: NextRequest) {
   try {
-    const rateLimit = checkRateLimit(getRateLimitKey(request), {
-      limit: 5,
-      windowMs: 60 * 60 * 1000,
-    });
-
-    if (!rateLimit.allowed) {
-      await captureServerEvent("assessment_rate_limited_server", "server", {
-        reset_at: new Date(rateLimit.resetAt).toISOString(),
-      });
-
-      return NextResponse.json(
-        { error: "Too many assessment attempts. Please try again later." },
-        {
-          status: 429,
-          headers: {
-            "Retry-After": String(
-              Math.max(1, Math.ceil((rateLimit.resetAt - Date.now()) / 1000))
-            ),
-          },
-        }
-      );
-    }
-
     const data: AssessmentData = await request.json();
 
     if (!data.currentCity || !data.currentCountry || !data.household) {
@@ -249,6 +247,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Please complete the assessment" },
         { status: 400 }
+      );
+    }
+
+    const rateLimit = checkRateLimit(
+      getRateLimitKey(request),
+      getAssessmentRateLimitOptions()
+    );
+
+    if (!rateLimit.allowed) {
+      const retryAfterSeconds = Math.max(
+        1,
+        Math.ceil((rateLimit.resetAt - Date.now()) / 1000)
+      );
+      const retryMinutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
+
+      await captureServerEvent("assessment_rate_limited_server", "server", {
+        reset_at: new Date(rateLimit.resetAt).toISOString(),
+        retry_after_seconds: retryAfterSeconds,
+      });
+
+      return NextResponse.json(
+        {
+          error: `We have seen a lot of report requests from this connection. Please wait about ${retryMinutes} minute${retryMinutes === 1 ? "" : "s"} and try again. Your answers are still here.`,
+          retryAfterSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(retryAfterSeconds),
+          },
+        }
       );
     }
 
