@@ -59,7 +59,9 @@ USER PROFILE:
 - AI worry level: ${data.aiWorryLevel}/5
 - AI outlook: ${data.aiOutlook === "weather" ? "Looking to weather uncertainty" : data.aiOutlook === "opportunity" ? "Looking to position for opportunity" : "Not specified"}
 
-Return ONLY a valid JSON array with exactly 4 objects, each with these exact keys:
+Return ONLY a valid JSON object with this exact shape:
+{
+  "recommendations": [
 {
   "city": "City Name",
   "country": "Country",
@@ -74,7 +76,73 @@ Return ONLY a valid JSON array with exactly 4 objects, each with these exact key
   "aiResilienceReason": "One sentence about AI economy resilience",
   "nextSteps": ["step 1", "step 2", "step 3"],
   "archetype": "safe-move|adventurous|sleeper-pick|wildcard"
+}
+  ]
 }`;
+}
+
+function isRecommendationLike(value: unknown): value is Recommendation {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const candidate = value as Partial<Recommendation>;
+  return (
+    typeof candidate.city === "string" &&
+    typeof candidate.country === "string" &&
+    typeof candidate.headline === "string" &&
+    Array.isArray(candidate.reasons) &&
+    Array.isArray(candidate.tradeoffs) &&
+    Array.isArray(candidate.nextSteps)
+  );
+}
+
+function findRecommendationArray(value: unknown): Recommendation[] | null {
+  if (Array.isArray(value)) {
+    return value.every(isRecommendationLike) ? value : null;
+  }
+
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const objectValue = value as Record<string, unknown>;
+  const preferredKeys = [
+    "recommendations",
+    "destinations",
+    "locations",
+    "results",
+  ];
+
+  for (const key of preferredKeys) {
+    const nested = findRecommendationArray(objectValue[key]);
+    if (nested) {
+      return nested;
+    }
+  }
+
+  for (const nestedValue of Object.values(objectValue)) {
+    const nested = findRecommendationArray(nestedValue);
+    if (nested) {
+      return nested;
+    }
+  }
+
+  return null;
+}
+
+function normalizeRecommendations(recommendations: Recommendation[]) {
+  return recommendations.map((recommendation) => ({
+    ...recommendation,
+    costPercent:
+      typeof recommendation.costPercent === "number"
+        ? recommendation.costPercent
+        : Number.parseFloat(String(recommendation.costPercent)) || 999,
+    aiResilienceScore:
+      typeof recommendation.aiResilienceScore === "number"
+        ? recommendation.aiResilienceScore
+        : Number.parseFloat(String(recommendation.aiResilienceScore)) || 0,
+  }));
 }
 
 function prioritizeRecommendations(
@@ -123,15 +191,13 @@ export async function POST(request: NextRequest) {
     }
 
     const parsed = JSON.parse(content);
-    const recommendations: Recommendation[] = Array.isArray(parsed)
-      ? parsed
-      : parsed.recommendations || parsed.destinations || Object.values(parsed)[0];
+    const recommendations = findRecommendationArray(parsed);
 
     if (!Array.isArray(recommendations) || recommendations.length === 0) {
       throw new Error("Invalid AI response format");
     }
     const prioritizedRecommendations = prioritizeRecommendations(
-      recommendations,
+      normalizeRecommendations(recommendations),
       data
     );
 
