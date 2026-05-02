@@ -42,7 +42,7 @@ const laterIncluded = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-bg text-text">
-      <section className="relative min-h-[88vh] overflow-hidden bg-bg text-text">
+      <section className="relative overflow-hidden bg-bg text-text">
         <div className="absolute inset-0 bg-[url('/images/encore-hero-map.png')] bg-cover bg-center opacity-60" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(251,247,239,0.97)_0%,rgba(251,247,239,0.9)_44%,rgba(251,247,239,0.42)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_55%,rgba(198,90,50,0.24)_0%,rgba(198,90,50,0)_34%)]" />
@@ -68,17 +68,14 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-6 pb-24 pt-16 md:pb-28 md:pt-28">
-          <p className="mb-5 max-w-xl font-mono text-xs uppercase text-accent">
-            a warmer way to choose what comes next
-          </p>
+        <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-6 pb-16 pt-14 md:pb-20 md:pt-24">
           <h1 className="max-w-4xl text-5xl font-black leading-[1.02] text-text md:text-7xl">
-            Find the place that fits the life you are building.
+            You got next.
           </h1>
-          <p className="mt-7 max-w-2xl text-lg leading-8 text-text-secondary">
-            Encore OS helps you weigh money, family, work, climate, and everyday
-            joy so your next move feels considered, hopeful, and real.
-          </p>
+          <h2 className="mt-7 max-w-3xl text-xl font-semibold leading-8 text-text-secondary md:text-2xl md:leading-9">
+            EncoreOS helps you explore scenarios that might be more fitting for
+            the life you are building.
+          </h2>
           <p className="mt-5 inline-flex max-w-3xl rounded-[8px] border border-accent/25 bg-[#fff3df]/90 px-4 py-3 text-sm font-bold text-text shadow-soft">
             Beta preview: start with one thoughtful path, free while we learn
             with early users.
@@ -98,26 +95,16 @@ export default function Home() {
               See how it works
             </a>
           </div>
-
-          <div className="mt-16 max-w-2xl border-l-2 border-accent/50 pl-5">
-            <p className="text-sm font-bold text-text">
-              Built for the question behind the spreadsheet:
-            </p>
-            <p className="mt-2 text-lg leading-8 text-text-secondary">
-              Where would life feel lighter, more expansive, and still make
-              practical sense?
-            </p>
-          </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="mx-auto max-w-6xl px-6 py-20">
+      <section id="how-it-works" className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-3xl">
           <p className="font-mono text-xs uppercase text-accent">
             how it works
           </p>
           <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-            A decision tool for people who are between old maps.
+            A decision tool to explore what could be.
           </h2>
           <p className="mt-5 max-w-2xl text-text-secondary">
             The product is built for relocation choices that are emotional,
