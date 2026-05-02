@@ -1,10 +1,10 @@
 {
   "name": "Encore OS",
   "short_name": "EncoreOS",
-  "description": "AI-powered relocation advisor for your next chapter",
+  "description": "A thoughtful relocation guide for your next chapter",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#10141F",
+  "background_color": "#FBF7EF",
   "theme_color": "#C65A32",
   "icons": [
     {

@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "encore-os — Where Should You Go Next?",
   description:
-    "AI-powered relocation advisor. Tell us about your life and we'll find your next chapter in a world reshaped by AI and economic change.",
+    "A thoughtful relocation guide for people choosing a next chapter with more room, warmth, and practical confidence.",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#10141F",
+  themeColor: "#FBF7EF",
   width: "device-width",
   initialScale: 1,
 };
