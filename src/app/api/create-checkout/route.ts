@@ -34,11 +34,11 @@ export async function POST(req: NextRequest) {
         price_data: {
           currency: "usd",
           product_data: {
-            name: "Encore Pro — Full Relocation Analysis",
+            name: "EncoreOS Path Deep Dive",
             description:
-              "All 4 personalized recommendations, deep-dive city reports, and unlimited reassessments.",
+              "Honest tradeoffs, practical next steps, and starting points for one relocation path.",
           },
-          unit_amount: 2900,
+          unit_amount: 900,
         },
         quantity: 1,
       },

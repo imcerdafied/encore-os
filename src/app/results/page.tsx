@@ -65,9 +65,13 @@ function ResultsContent() {
       const stored = sessionStorage.getItem(`result-${id}`);
       if (stored) {
         const parsed = JSON.parse(stored);
-        setResult(parsed);
-        setIsPaid(Boolean(parsed.paid));
-        return;
+        const storedCount = parsed.recommendations?.length || 0;
+        const expectedCount = parsed.totalRecommendations || storedCount;
+        if (storedCount >= expectedCount) {
+          setResult(parsed);
+          setIsPaid(Boolean(parsed.paid));
+          return;
+        }
       }
     }
 
@@ -102,6 +106,9 @@ function ResultsContent() {
         router.push(data.url);
       } else if (data.url) {
         window.location.href = data.url;
+      } else {
+        setUnlockLoading(false);
+        window.alert(data.error || "Checkout is not available yet.");
       }
     } catch {
       setUnlockLoading(false);
@@ -117,7 +124,7 @@ function ResultsContent() {
             href="/assess"
             className="text-text-secondary hover:text-text transition-colors"
           >
-            Take the assessment &rarr;
+            Take the assessment
           </Link>
         </div>
       </main>

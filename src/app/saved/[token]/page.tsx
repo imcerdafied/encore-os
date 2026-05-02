@@ -45,6 +45,9 @@ export default function SavedResultsPage() {
         router.push(data.url);
       } else if (data.url) {
         window.location.href = data.url;
+      } else {
+        setUnlockLoading(false);
+        window.alert(data.error || "Checkout is not available yet.");
       }
     } catch {
       setUnlockLoading(false);
@@ -60,7 +63,7 @@ export default function SavedResultsPage() {
             href="/assess"
             className="text-text-secondary hover:text-text transition-colors"
           >
-            Take the assessment &rarr;
+            Take the assessment
           </Link>
         </div>
       </main>

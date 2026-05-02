@@ -1,6 +1,8 @@
 export interface AssessmentData {
   // Step 1: Where you are now
   currentCity: string;
+  currentCountry: string;
+  currency: string;
   monthlyIncome: number;
   monthlyExpenses: number;
   savingsRange: string;
@@ -20,9 +22,12 @@ export interface AssessmentData {
   geographicRange: string;
   urbanPreference: string;
   timeline: string;
+  citizenships: string;
+  taxResidency: string;
+  languages: string;
   biggestFear: string;
 
-  // Step 5: AI angle
+  // Step 5: Work and opportunity
   currentJob: string;
   aiWorryLevel: number;
   aiOutlook: string;
@@ -30,6 +35,8 @@ export interface AssessmentData {
 
 export const defaultAssessment: AssessmentData = {
   currentCity: "",
+  currentCountry: "",
+  currency: "USD",
   monthlyIncome: 10000,
   monthlyExpenses: 5000,
   savingsRange: "",
@@ -43,6 +50,9 @@ export const defaultAssessment: AssessmentData = {
   geographicRange: "",
   urbanPreference: "",
   timeline: "",
+  citizenships: "",
+  taxResidency: "",
+  languages: "",
   biggestFear: "",
   currentJob: "",
   aiWorryLevel: 3,

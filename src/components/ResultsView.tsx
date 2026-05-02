@@ -11,8 +11,6 @@ const archetypeLabel: Record<string, string> = {
   wildcard: "Wildcard",
 };
 
-const lockedLabels = ["Adventurous", "Sleeper pick", "Wildcard"];
-
 function AiScoreGauge({ score }: { score: number }) {
   const bounded = Math.max(0, Math.min(10, score));
 
@@ -36,16 +34,22 @@ function AiScoreGauge({ score }: { score: number }) {
 function RecommendationCard({
   rec,
   index,
+  isPaid,
+  onUnlock,
+  unlockLoading,
 }: {
   rec: Recommendation;
   index: number;
+  isPaid: boolean;
+  onUnlock: () => void;
+  unlockLoading: boolean;
 }) {
   const [showTradeoffs, setShowTradeoffs] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
-    const text = `${rec.flag} ${rec.city}, ${rec.country} - ${rec.headline}\n${rec.costComparison}\nAI Resilience: ${rec.aiResilienceScore}/10\n\nFound with Encore OS`;
+    const text = `${rec.flag} ${rec.city}, ${rec.country} - ${rec.headline}\n${rec.costComparison}\nCareer resilience: ${rec.aiResilienceScore}/10\n\nFound with Encore OS`;
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -91,7 +95,7 @@ function RecommendationCard({
         <div className="rounded-[8px] border border-border bg-bg p-4">
           <div className="mb-3 flex items-center justify-between">
             <span className="font-mono text-xs uppercase text-text-secondary">
-              AI economy resilience
+              Career resilience
             </span>
           </div>
           <AiScoreGauge score={rec.aiResilienceScore} />
@@ -115,22 +119,34 @@ function RecommendationCard({
           </ul>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        {isPaid ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button
+              onClick={() => setShowTradeoffs(!showTradeoffs)}
+              className="rounded-[8px] border border-border px-4 py-3 text-left text-sm font-semibold text-text transition hover:border-accent hover:bg-[#fff3df]"
+            >
+              {showTradeoffs ? "Hide tradeoffs" : "Honest tradeoffs"}
+            </button>
+            <button
+              onClick={() => setShowSteps(!showSteps)}
+              className="rounded-[8px] border border-border px-4 py-3 text-left text-sm font-semibold text-text transition hover:border-teal hover:bg-bg-subtle"
+            >
+              {showSteps ? "Hide next steps" : "Practical next steps"}
+            </button>
+          </div>
+        ) : (
           <button
-            onClick={() => setShowTradeoffs(!showTradeoffs)}
-            className="rounded-[8px] border border-border px-4 py-3 text-left text-sm font-semibold text-text transition hover:border-accent hover:bg-[#fff3df]"
+            onClick={onUnlock}
+            disabled={unlockLoading}
+            className="w-full rounded-[8px] bg-text px-4 py-3 text-left text-sm font-bold text-white transition hover:bg-night disabled:opacity-60"
           >
-            {showTradeoffs ? "Hide tradeoffs" : "Honest tradeoffs"}
+            {unlockLoading
+              ? "Opening checkout..."
+              : "Double-click into this path"}
           </button>
-          <button
-            onClick={() => setShowSteps(!showSteps)}
-            className="rounded-[8px] border border-border px-4 py-3 text-left text-sm font-semibold text-text transition hover:border-teal hover:bg-bg-subtle"
-          >
-            {showSteps ? "Hide next steps" : "Practical next steps"}
-          </button>
-        </div>
+        )}
 
-        {showTradeoffs && (
+        {isPaid && showTradeoffs && (
           <ul className="animate-fade-in space-y-2 rounded-[8px] border border-border bg-bg p-4">
             {rec.tradeoffs.map((tradeoff, i) => (
               <li
@@ -144,7 +160,7 @@ function RecommendationCard({
           </ul>
         )}
 
-        {showSteps && (
+        {isPaid && showSteps && (
           <ol className="animate-fade-in space-y-2 rounded-[8px] border border-border bg-bg p-4">
             {rec.nextSteps.map((step, i) => (
               <li
@@ -162,30 +178,11 @@ function RecommendationCard({
   );
 }
 
-function LockedRecommendationCard({ index }: { index: number }) {
-  const label = lockedLabels[index % lockedLabels.length];
-
-  return (
-    <article className="rounded-[8px] border border-dashed border-border bg-surface p-6 shadow-soft">
-      <p className="font-mono text-xs uppercase text-accent">{label}</p>
-      <div className="mt-10 space-y-4">
-        <div className="h-7 w-2/3 rounded-full bg-bg-subtle" />
-        <div className="h-3 w-full rounded-full bg-bg-subtle" />
-        <div className="h-3 w-5/6 rounded-full bg-bg-subtle" />
-      </div>
-      <div className="mt-10 rounded-[8px] border border-accent/30 bg-[#fff3df] p-5">
-        <p className="text-sm font-bold text-text">Held for beta tuning</p>
-        <p className="mt-2 text-sm leading-6 text-text-secondary">
-          We are showing one high-confidence path first while we improve the
-          full four-path comparison.
-        </p>
-      </div>
-    </article>
-  );
-}
-
 export default function ResultsView({
   result,
+  isPaid,
+  onUnlock,
+  unlockLoading,
 }: {
   result: AssessmentResult;
   isPaid: boolean;
@@ -198,7 +195,7 @@ export default function ResultsView({
   const totalRecommendations =
     result.totalRecommendations || result.recommendations.length;
   const visibleRecommendations = result.recommendations;
-  const lockedCount = Math.max(0, totalRecommendations - visibleRecommendations.length);
+  const hasDeepDive = isPaid || Boolean(result.paid);
 
   const handleEmailCapture = async () => {
     if (!email.includes("@")) return;
@@ -224,7 +221,7 @@ export default function ResultsView({
         </Link>
         <div className="flex items-center gap-3">
           <span className="rounded-[8px] bg-accent px-3 py-1 font-mono text-xs text-white">
-            beta preview
+            scenario view
           </span>
           <Link
             href="/assess"
@@ -246,13 +243,15 @@ export default function ResultsView({
                 Your next chapter starts here.
               </h1>
               <p className="mt-4 max-w-2xl leading-7 text-text-secondary">
-                Here is the strongest first path from your profile. The rest of
-                the four-path comparison is held back while we tune cost, tax,
-                and fit quality during beta.
+                Here are four possible paths from your profile. Browse the map
+                for free, then double-click into a path when you want the deeper
+                tradeoffs and next steps.
               </p>
             </div>
             <div className="rounded-[8px] border border-border bg-surface p-4">
-              <p className="font-mono text-xs text-text-secondary">preview depth</p>
+              <p className="font-mono text-xs text-text-secondary">
+                scenario paths
+              </p>
               <p className="mt-2 text-3xl font-black">
                 {visibleRecommendations.length}/{totalRecommendations}
               </p>
@@ -262,10 +261,14 @@ export default function ResultsView({
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {visibleRecommendations.map((rec, i) => (
-            <RecommendationCard key={`${rec.city}-${i}`} rec={rec} index={i} />
-          ))}
-          {Array.from({ length: lockedCount }, (_, i) => (
-            <LockedRecommendationCard key={i} index={i} />
+            <RecommendationCard
+              key={`${rec.city}-${i}`}
+              rec={rec}
+              index={i}
+              isPaid={hasDeepDive}
+              onUnlock={onUnlock}
+              unlockLoading={unlockLoading}
+            />
           ))}
         </div>
 
@@ -306,7 +309,7 @@ export default function ResultsView({
         </section>
 
         <p className="mx-auto mt-10 max-w-2xl text-center text-xs leading-6 text-text-secondary">
-          These recommendations are AI-generated from your inputs. Do your own
+          These recommendations are generated from your inputs. Do your own
           research before making major life decisions. Encore OS provides
           guidance, not guarantees.
         </p>

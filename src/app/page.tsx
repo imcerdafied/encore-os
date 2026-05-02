@@ -27,16 +27,16 @@ const reportHighlights = [
 
 const included = [
   "Full 5-minute assessment",
-  "One fully detailed recommendation",
-  "Cost, tax, and career resilience notes",
-  "Tradeoffs and practical next steps",
+  "Four personalized scenario cards",
+  "Cost, tax, visa, and career signals",
+  "Shareable results link",
 ];
 
 const laterIncluded = [
-  "All 4 recommendation archetypes",
-  "Deep-dive city reports",
-  "Unlimited reassessments",
-  "Shareable results link",
+  "Honest tradeoffs for one path",
+  "Practical next steps",
+  "Visa and residency prompts",
+  "Neighborhood starting points",
 ];
 
 export default function Home() {
@@ -77,8 +77,8 @@ export default function Home() {
             the life you are building.
           </h2>
           <p className="mt-5 inline-flex max-w-3xl rounded-[8px] border border-accent/25 bg-[#fff3df]/90 px-4 py-3 text-sm font-bold text-text shadow-soft">
-            Beta preview: start with one thoughtful path, free while we learn
-            with early users.
+            Beta preview: explore four scenarios for free while we learn with
+            early users.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -176,11 +176,11 @@ export default function Home() {
             beta preview
           </p>
           <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-            Start with one carefully reasoned path.
+            Explore the map for free.
           </h2>
           <p className="mt-5 text-text-secondary">
-            During beta, Encore OS gives you the top recommendation for free
-            while we keep improving the full four-path report.
+            During beta, Encore OS gives you the scenario map for free. Pay
+            only when you want to go deeper on a specific path.
           </p>
         </div>
 
@@ -191,7 +191,7 @@ export default function Home() {
             </div>
             <h3 className="mt-5 text-2xl font-black">Beta preview</h3>
             <p className="mt-2 text-text-secondary">
-              Your top path is free while the product is in active testing.
+              See what is possible across four relocation scenarios.
             </p>
             <p className="mt-8 text-4xl font-black">$0</p>
             <p className="mt-1 text-sm text-text-secondary">
@@ -214,11 +214,11 @@ export default function Home() {
           </article>
 
           <article className="rounded-[8px] border border-border bg-surface p-7 shadow-soft">
-            <h3 className="text-2xl font-black">Full report</h3>
+            <h3 className="text-2xl font-black">Path deep dive</h3>
             <p className="mt-2 text-text-secondary">
-              The full four-path comparison will return after beta tuning.
+              Double-click into one path when you want the practical details.
             </p>
-            <p className="mt-8 text-4xl font-black">$29</p>
+            <p className="mt-8 text-4xl font-black">$9</p>
             <p className="mt-1 text-sm text-text-secondary">
               planned one-time purchase
             </p>
@@ -231,7 +231,7 @@ export default function Home() {
               ))}
             </ul>
             <p className="mt-8 rounded-[8px] border border-border px-5 py-3 text-center text-sm font-bold text-text-secondary">
-              Not active during beta
+              Available when payments are connected
             </p>
           </article>
         </div>

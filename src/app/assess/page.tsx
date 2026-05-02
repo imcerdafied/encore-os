@@ -19,12 +19,26 @@ const PRIORITIES = [
   "Distance from current home/family",
 ];
 
+const CURRENCIES = [
+  "USD",
+  "EUR",
+  "GBP",
+  "CAD",
+  "MXN",
+  "BRL",
+  "COP",
+  "ARS",
+  "CLP",
+  "PEN",
+  "UYU",
+];
+
 const SAVINGS_RANGES = [
-  "Less than $50k",
-  "$50k – $150k",
-  "$150k – $500k",
-  "$500k – $1M",
-  "$1M+",
+  "Less than 6 months of expenses",
+  "6 to 18 months of expenses",
+  "18 months to 3 years of expenses",
+  "3+ years of expenses",
+  "Financially independent",
 ];
 
 const WORK_SITUATIONS = [
@@ -47,11 +61,13 @@ const HOUSEHOLDS = [
 ];
 
 const GEO_RANGES = [
-  "US only",
-  "US + Canada/Mexico",
+  "Same country only",
+  "Latin America",
+  "Europe",
+  "North America",
   "Americas",
-  "Europe open",
-  "Asia/Pacific open",
+  "Europe + Latin America",
+  "Asia/Pacific",
   "Anywhere",
 ];
 
@@ -62,6 +78,20 @@ const TIMELINES = [
   "Seriously considering (1-2 years)",
   "Actively planning (next 6 months)",
 ];
+
+const MONEY_MAX = 200000;
+
+function formatMoney(value: number, currency: string) {
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    }).format(value);
+  } catch {
+    return `${currency} ${value.toLocaleString()}`;
+  }
+}
 
 function OptionButton({
   label,
@@ -106,7 +136,12 @@ export default function AssessPage() {
   const canNext = () => {
     switch (step) {
       case 1:
-        return data.currentCity && data.savingsRange && data.workSituation;
+        return (
+          data.currentCity &&
+          data.currentCountry &&
+          data.savingsRange &&
+          data.workSituation
+        );
       case 2:
         return data.household;
       case 3:
@@ -203,63 +238,97 @@ export default function AssessPage() {
             </p>
 
             <div className="space-y-8">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="mb-3 block font-mono text-xs uppercase text-text-secondary">
+                    Current city
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Mexico City"
+                    value={data.currentCity}
+                    onChange={(e) => update({ currentCity: e.target.value })}
+                    className="h-12 w-full rounded-[8px] border border-border bg-surface px-4 py-3 text-[16px] text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-3 block font-mono text-xs uppercase text-text-secondary">
+                    Current country
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Mexico"
+                    value={data.currentCountry}
+                    onChange={(e) =>
+                      update({ currentCountry: e.target.value })
+                    }
+                    className="h-12 w-full rounded-[8px] border border-border bg-surface px-4 py-3 text-[16px] text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
-                  Current city / country
+                <label className="mb-3 block font-mono text-xs uppercase text-text-secondary">
+                  Primary currency
                 </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Austin, TX or London, UK"
-                  value={data.currentCity}
-                  onChange={(e) => update({ currentCity: e.target.value })}
-                  className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 text-[16px]"
-                />
+                <select
+                  value={data.currency}
+                  onChange={(e) => update({ currency: e.target.value })}
+                  className="h-12 w-full rounded-[8px] border border-border bg-surface px-4 text-[16px] text-text focus:outline-none focus:ring-2 focus:ring-accent/30"
+                >
+                  {CURRENCIES.map((currency) => (
+                    <option key={currency} value={currency}>
+                      {currency}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
-                  Monthly take-home income (USD)
+                  Monthly take-home income
                 </label>
-                <div className="flex items-center gap-4">
+                <div className="grid grid-cols-[1fr_9rem] items-center gap-4">
                   <input
                     type="range"
                     min={1000}
-                    max={200000}
+                    max={MONEY_MAX}
                     step={1000}
                     value={data.monthlyIncome}
                     onChange={(e) =>
                       update({ monthlyIncome: Number(e.target.value) })
                     }
-                    className="flex-1"
+                    className="w-full"
                   />
-                  <span className="font-mono text-sm text-text w-24 text-right">
-                    ${data.monthlyIncome.toLocaleString()}
+                  <span className="font-mono text-sm text-text text-right">
+                    {formatMoney(data.monthlyIncome, data.currency)}
                   </span>
                 </div>
               </div>
 
               <div>
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
-                  Monthly total expenses, including housing (USD)
+                  Monthly total expenses, including housing
                 </label>
                 <p className="mb-3 text-sm text-text-secondary">
                   Include rent or mortgage, childcare, debt, travel, recurring
                   bills, and normal monthly spend.
                 </p>
-                <div className="flex items-center gap-4">
+                <div className="grid grid-cols-[1fr_9rem] items-center gap-4">
                   <input
                     type="range"
                     min={500}
-                    max={20000}
+                    max={MONEY_MAX}
                     step={500}
                     value={data.monthlyExpenses}
                     onChange={(e) =>
                       update({ monthlyExpenses: Number(e.target.value) })
                     }
-                    className="flex-1"
+                    className="w-full"
                   />
-                  <span className="font-mono text-sm text-text w-24 text-right">
-                    ${data.monthlyExpenses.toLocaleString()}
+                  <span className="font-mono text-sm text-text text-right">
+                    {formatMoney(data.monthlyExpenses, data.currency)}
                   </span>
                 </div>
               </div>
@@ -471,7 +540,7 @@ export default function AssessPage() {
               Openness to change
             </h2>
             <p className="text-text-secondary mb-10">
-              How far are you willing to go &mdash; literally and figuratively?
+              How far are you willing to go, literally and figuratively?
             </p>
 
             <div className="space-y-8">
@@ -488,6 +557,51 @@ export default function AssessPage() {
                       onClick={() => update({ geographicRange: g })}
                     />
                   ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
+                  Citizenship / passports
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. US, Mexico, Italy"
+                  value={data.citizenships}
+                  onChange={(e) => update({ citizenships: e.target.value })}
+                  className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 text-[16px]"
+                />
+                <p className="mt-2 text-xs leading-5 text-text-secondary">
+                  This helps us think about visas, residency, and realistic
+                  move paths.
+                </p>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
+                    Tax residency
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. United States, Spain"
+                    value={data.taxResidency}
+                    onChange={(e) => update({ taxResidency: e.target.value })}
+                    className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 text-[16px]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
+                    Languages
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. English, Spanish, Portuguese"
+                    value={data.languages}
+                    onChange={(e) => update({ languages: e.target.value })}
+                    className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 text-[16px]"
+                  />
                 </div>
               </div>
 
@@ -539,17 +653,18 @@ export default function AssessPage() {
           </div>
         )}
 
-        {/* Step 5: AI angle */}
+        {/* Step 5: Work and opportunity */}
         {step === 5 && (
           <div className="animate-fade-in">
             <p className="font-mono text-xs text-text-secondary mb-6">
               &bull; encore-os / assess
             </p>
             <h2 className="text-3xl md:text-4xl font-black text-text mb-2">
-              The AI angle
+              Work and opportunity
             </h2>
             <p className="text-text-secondary mb-10">
-              Optional but powerful &mdash; helps us factor in economic resilience.
+              Optional but powerful. This helps us factor in income and career
+              resilience.
             </p>
 
             <div className="space-y-8">
@@ -568,7 +683,8 @@ export default function AssessPage() {
 
               <div>
                 <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
-                  How worried are you about AI affecting your income?
+                  How much do you want to protect income from automation or
+                  market change?
                 </label>
                 <div className="flex items-center gap-4">
                   <span className="text-xs text-text-secondary">Not at all</span>
@@ -596,12 +712,12 @@ export default function AssessPage() {
                 </label>
                 <div className="grid grid-cols-1 gap-3">
                   <OptionButton
-                    label="A place to weather uncertainty — stability and low cost"
+                    label="A place to weather uncertainty, with stability and lower cost"
                     selected={data.aiOutlook === "weather"}
                     onClick={() => update({ aiOutlook: "weather" })}
                   />
                   <OptionButton
-                    label="A place to position for opportunity — growth and innovation"
+                    label="A place to position for opportunity, with growth and innovation"
                     selected={data.aiOutlook === "opportunity"}
                     onClick={() => update({ aiOutlook: "opportunity" })}
                   />

@@ -1,5 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient } from "@/lib/supabase";
+import { Recommendation } from "@/lib/types";
+
+function cleanText(value: string) {
+  return value.replace(/[\u2013\u2014]/g, ", ");
+}
+
+function cleanMaybeText(value: unknown) {
+  return typeof value === "string" ? cleanText(value) : "";
+}
+
+function cleanTextList(value: unknown) {
+  return Array.isArray(value) ? value.map((item) => cleanMaybeText(item)) : [];
+}
+
+function cleanRecommendations(recommendations: Recommendation[]) {
+  return recommendations.map((recommendation) => ({
+    ...recommendation,
+    city: cleanMaybeText(recommendation.city),
+    country: cleanMaybeText(recommendation.country),
+    descriptor: cleanMaybeText(recommendation.descriptor),
+    headline: cleanMaybeText(recommendation.headline),
+    costComparison: cleanMaybeText(recommendation.costComparison),
+    reasons: cleanTextList(recommendation.reasons),
+    tradeoffs: cleanTextList(recommendation.tradeoffs),
+    aiResilienceReason: cleanMaybeText(recommendation.aiResilienceReason),
+    nextSteps: cleanTextList(recommendation.nextSteps),
+    archetype: cleanMaybeText(recommendation.archetype),
+  }));
+}
+
+function stripDeepDive(recommendations: Recommendation[]) {
+  return recommendations.map((recommendation) => ({
+    ...recommendation,
+    tradeoffs: [],
+    nextSteps: [],
+  }));
+}
 
 export async function GET(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("id");
@@ -30,7 +67,7 @@ export async function GET(request: NextRequest) {
     }
 
     const recommendations = Array.isArray(data.results_json)
-      ? data.results_json
+      ? cleanRecommendations(data.results_json)
       : [];
     const paid = Boolean(data.paid);
 
@@ -38,7 +75,7 @@ export async function GET(request: NextRequest) {
       id: data.id,
       shareToken: data.share_token,
       inputs: data.inputs_json,
-      recommendations: paid ? recommendations : recommendations.slice(0, 1),
+      recommendations: paid ? recommendations : stripDeepDive(recommendations),
       totalRecommendations: recommendations.length,
       paid,
       createdAt: data.created_at,

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "encore-os — Where Should You Go Next?",
+  title: "encore-os: Where Should You Go Next?",
   description:
     "A thoughtful relocation guide for people choosing a next chapter with more room, warmth, and practical confidence.",
   manifest: "/manifest.json",

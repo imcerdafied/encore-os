@@ -13,6 +13,10 @@ function getOpenAI() {
 }
 
 function buildPrompt(data: AssessmentData): string {
+  const currency = data.currency || "USD";
+  const currentLocation = [data.currentCity, data.currentCountry]
+    .filter(Boolean)
+    .join(", ");
   const priorityList = Object.entries(data.priorities)
     .sort(([, a], [, b]) => b - a)
     .map(([k, v]) => `${k}: ${v}/5`)
@@ -23,18 +27,26 @@ function buildPrompt(data: AssessmentData): string {
     data.priorities["Political stability"] || 0
   );
 
-  return `You are a world-class relocation advisor with deep knowledge of global cities, cost of living, safety, healthcare, culture, climate, and the economic impacts of AI on different regions and job markets.
+  return `You are a world-class global relocation advisor with deep knowledge of Latin America, Europe, North America, and other international move paths. You understand cost of living, safety, healthcare, education, culture, climate, language fit, taxes, residency routes, digital nomad options, and career resilience.
 
 Based on the user profile below, recommend exactly 4 relocation destinations. For each location include:
 1. City/Region name and country
 2. A compelling 2-sentence headline explaining why this fits THIS person specifically
-3. Cost of living comparison vs their current city (% more or less expensive)
+3. Cost of living comparison vs their current location (% more or less expensive)
 4. 4-5 specific reasons this fits their situation (bullet points, specific and personal)
 5. What they might miss or find challenging (honest tradeoffs, 2-3 points)
-6. AI economy resilience score (1-10) with one sentence explanation
-7. Practical next steps: visa/residency path if international, best neighborhoods, one key resource
+6. Career resilience score (1-10) with one sentence explanation
+7. Practical next steps: visa or residency path if relevant, best neighborhoods, tax or professional-advice prompt where appropriate, one key resource
 
-Mix: include options at different boldness levels — one "safe easy move," one "adventurous but realistic," one "surprising sleeper pick," one wildcard if appropriate.
+Mix: include options at different boldness levels: one "safe easy move," one "adventurous but realistic," one "surprising sleeper pick," one wildcard if appropriate.
+
+IMPORTANT GLOBAL RULES:
+- Do not assume the user is American unless citizenship, tax residency, or current country says so.
+- Use the user's chosen currency (${currency}) when describing income, expenses, savings, and relative affordability. You may use percentages for cross-country comparisons.
+- Treat citizenship, passports, tax residency, and languages as major constraints for visa realism, taxation, school access, healthcare, banking, and ease of daily life.
+- For Latin America and Europe recommendations, include practical differences across residency, tax, healthcare access, safety by neighborhood, and language friction.
+- Avoid legal, tax, or immigration certainty. Phrase these as likely paths to research and suggest local professional advice for high-stakes decisions.
+- Do not use em dashes in any response text. Use commas, colons, or short sentences instead.
 
 IMPORTANT COST AND TAX RULES:
 - If "Cost of living" is rated 4 or 5, the safe easy move MUST be meaningfully cheaper than the current location, preferably 10%+ cheaper. Do not make the safe move more expensive.
@@ -44,9 +56,10 @@ IMPORTANT COST AND TAX RULES:
 - Cost priority detected: ${costPriority}/5. Tax sensitivity proxy: ${taxPriority}/5.
 
 USER PROFILE:
-- Current location: ${data.currentCity}
-- Monthly income: $${data.monthlyIncome.toLocaleString()}/month
-- Monthly total expenses, including housing: $${data.monthlyExpenses.toLocaleString()}/month
+- Current location: ${currentLocation}
+- Currency: ${currency}
+- Monthly income: ${currency} ${data.monthlyIncome.toLocaleString()}/month
+- Monthly total expenses, including housing: ${currency} ${data.monthlyExpenses.toLocaleString()}/month
 - Savings range: ${data.savingsRange}
 - Work situation: ${data.workSituation}
 - Household: ${data.household}${data.kidAges ? ` (children ages: ${data.kidAges})` : ""}
@@ -55,9 +68,12 @@ USER PROFILE:
 - Priorities (rated 1-5): ${priorityList}
 - Geographic range: ${data.geographicRange}
 - Urban preference: ${data.urbanPreference}
+- Citizenship/passports: ${data.citizenships || "Not provided"}
+- Tax residency: ${data.taxResidency || "Not provided"}
+- Languages: ${data.languages || "Not provided"}
 - Timeline: ${data.timeline}${data.biggestFear ? `\n- Biggest fear: ${data.biggestFear}` : ""}${data.currentJob ? `\n- Job/field: ${data.currentJob}` : ""}
-- AI worry level: ${data.aiWorryLevel}/5
-- AI outlook: ${data.aiOutlook === "weather" ? "Looking to weather uncertainty" : data.aiOutlook === "opportunity" ? "Looking to position for opportunity" : "Not specified"}
+- Income disruption worry level: ${data.aiWorryLevel}/5
+- Opportunity outlook: ${data.aiOutlook === "weather" ? "Looking for stability and lower cost" : data.aiOutlook === "opportunity" ? "Looking to position for growth and innovation" : "Not specified"}
 
 Return ONLY a valid JSON object with this exact shape:
 {
@@ -68,12 +84,12 @@ Return ONLY a valid JSON object with this exact shape:
   "flag": "country flag emoji",
   "descriptor": "short atmospheric descriptor, e.g. The underrated gem of Southern Europe",
   "headline": "Two compelling sentences about why this fits THIS person.",
-  "costComparison": "X% cheaper/more expensive than [current city]",
+  "costComparison": "X% cheaper/more expensive than [current location]",
   "costPercent": -37,
   "reasons": ["reason 1", "reason 2", "reason 3", "reason 4"],
   "tradeoffs": ["tradeoff 1", "tradeoff 2", "tradeoff 3"],
   "aiResilienceScore": 7,
-  "aiResilienceReason": "One sentence about AI economy resilience",
+  "aiResilienceReason": "One sentence about career and economic resilience",
   "nextSteps": ["step 1", "step 2", "step 3"],
   "archetype": "safe-move|adventurous|sleeper-pick|wildcard"
 }
@@ -131,9 +147,31 @@ function findRecommendationArray(value: unknown): Recommendation[] | null {
   return null;
 }
 
+function cleanText(value: string) {
+  return value.replace(/[\u2013\u2014]/g, ", ");
+}
+
+function cleanMaybeText(value: unknown) {
+  return typeof value === "string" ? cleanText(value) : "";
+}
+
+function cleanTextList(value: unknown) {
+  return Array.isArray(value) ? value.map((item) => cleanMaybeText(item)) : [];
+}
+
 function normalizeRecommendations(recommendations: Recommendation[]) {
   return recommendations.map((recommendation) => ({
     ...recommendation,
+    city: cleanMaybeText(recommendation.city),
+    country: cleanMaybeText(recommendation.country),
+    descriptor: cleanMaybeText(recommendation.descriptor),
+    headline: cleanMaybeText(recommendation.headline),
+    costComparison: cleanMaybeText(recommendation.costComparison),
+    reasons: cleanTextList(recommendation.reasons),
+    tradeoffs: cleanTextList(recommendation.tradeoffs),
+    aiResilienceReason: cleanMaybeText(recommendation.aiResilienceReason),
+    nextSteps: cleanTextList(recommendation.nextSteps),
+    archetype: cleanMaybeText(recommendation.archetype),
     costPercent:
       typeof recommendation.costPercent === "number"
         ? recommendation.costPercent
@@ -163,11 +201,19 @@ function prioritizeRecommendations(
   });
 }
 
+function stripDeepDive(recommendations: Recommendation[]) {
+  return recommendations.map((recommendation) => ({
+    ...recommendation,
+    tradeoffs: [],
+    nextSteps: [],
+  }));
+}
+
 export async function POST(request: NextRequest) {
   try {
     const data: AssessmentData = await request.json();
 
-    if (!data.currentCity || !data.household) {
+    if (!data.currentCity || !data.currentCountry || !data.household) {
       return NextResponse.json(
         { error: "Please complete the assessment" },
         { status: 400 }
@@ -224,7 +270,7 @@ export async function POST(request: NextRequest) {
       id,
       shareToken,
       inputs: data,
-      recommendations: prioritizedRecommendations.slice(0, 1),
+      recommendations: stripDeepDive(prioritizedRecommendations),
       totalRecommendations: prioritizedRecommendations.length,
       paid: false,
       createdAt: new Date().toISOString(),

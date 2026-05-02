@@ -1,21 +1,21 @@
 # Encore OS
 
-**Your next act starts here.** AI-powered relocation advisor that helps people figure out where to relocate given their life situation — especially in the context of economic uncertainty and the AI revolution reshaping work and wealth.
+**Your next act starts here.** A relocation guide that helps people explore where to move given their life situation, practical constraints, and appetite for opportunity.
 
 ## How It Works
 
-1. **Take the Assessment** — 5-step form covering your finances, household, priorities, openness to change, and AI career outlook
-2. **AI Analysis** — GPT-4o evaluates hundreds of factors and generates 4 personalized recommendations
-3. **Get Results** — Each recommendation includes cost comparison, AI resilience score, honest tradeoffs, and practical next steps
-4. **Share** — Shareable URLs for each result set
+1. **Take the Assessment** - 5-step form covering your finances, household, priorities, openness to change, and career outlook
+2. **Generate Scenarios** - GPT-4o produces 4 personalized relocation scenarios
+3. **Get Results** - Each recommendation includes cost comparison, career resilience, honest tradeoffs, and practical next steps
+4. **Share** - Shareable URLs for each result set
 
 ## Tech Stack
 
 - **Next.js 14** (App Router) + TypeScript
-- **Tailwind CSS** — Navy/gold/cream design language
-- **Supabase** — Auth, assessment storage, email capture
-- **OpenAI GPT-4o** — Recommendation engine
-- **Vercel** — Deployment target
+- **Tailwind CSS** - Navy/gold/cream design language
+- **Supabase** - Auth, assessment storage, email capture
+- **OpenAI GPT-4o** - Recommendation engine
+- **Vercel** - Deployment target
 
 ## Getting Started
 
