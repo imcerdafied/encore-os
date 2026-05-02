@@ -77,6 +77,24 @@ Return ONLY a valid JSON array with exactly 4 objects, each with these exact key
 }`;
 }
 
+function prioritizeRecommendations(
+  recommendations: Recommendation[],
+  data: AssessmentData
+) {
+  const costPriority = data.priorities["Cost of living"] || 0;
+  if (costPriority < 4) {
+    return recommendations;
+  }
+
+  return [...recommendations].sort((a, b) => {
+    const aCost = Number.isFinite(a.costPercent) ? a.costPercent : 999;
+    const bCost = Number.isFinite(b.costPercent) ? b.costPercent : 999;
+    const aPenalty = aCost > 0 ? 1000 + aCost : aCost;
+    const bPenalty = bCost > 0 ? 1000 + bCost : bCost;
+    return aPenalty - bPenalty;
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const data: AssessmentData = await request.json();
@@ -112,6 +130,10 @@ export async function POST(request: NextRequest) {
     if (!Array.isArray(recommendations) || recommendations.length === 0) {
       throw new Error("Invalid AI response format");
     }
+    const prioritizedRecommendations = prioritizeRecommendations(
+      recommendations,
+      data
+    );
 
     const id = uuidv4();
     const shareToken = uuidv4().slice(0, 8);
@@ -123,7 +145,7 @@ export async function POST(request: NextRequest) {
         await supabase.from("assessments").insert({
           id,
           inputs_json: data,
-          results_json: recommendations,
+          results_json: prioritizedRecommendations,
           share_token: shareToken,
           created_at: new Date().toISOString(),
         });
@@ -136,8 +158,8 @@ export async function POST(request: NextRequest) {
       id,
       shareToken,
       inputs: data,
-      recommendations: recommendations.slice(0, 1),
-      totalRecommendations: recommendations.length,
+      recommendations: prioritizedRecommendations.slice(0, 1),
+      totalRecommendations: prioritizedRecommendations.length,
       paid: false,
       createdAt: new Date().toISOString(),
     });
