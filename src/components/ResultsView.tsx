@@ -42,27 +42,61 @@ function RecommendationCard({
   isPaid,
   onUnlock,
   unlockLoading,
+  shareUrl,
 }: {
   rec: Recommendation;
   index: number;
   isPaid: boolean;
   onUnlock: (recommendation: Recommendation, index: number) => void;
   unlockLoading: boolean;
+  shareUrl: string;
 }) {
   const [showTradeoffs, setShowTradeoffs] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [shareState, setShareState] = useState<"idle" | "shared" | "copied">(
+    "idle"
+  );
   const recommendationAnalytics = getRecommendationAnalyticsProperties(
     rec,
     index
   );
 
+  const resetShareState = (state: "shared" | "copied") => {
+    setShareState(state);
+    setTimeout(() => setShareState("idle"), 2000);
+  };
+
   const handleShare = async () => {
-    const text = `${rec.flag} ${rec.city}, ${rec.country} - ${rec.headline}\n${rec.costComparison}\nCareer resilience: ${rec.aiResilienceScore}/10\n\nFound with Encore OS`;
-    await navigator.clipboard.writeText(text);
-    track("recommendation_shared", recommendationAnalytics);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    const text = `${rec.flag} ${rec.city}, ${rec.country}: ${rec.headline}\n${rec.costComparison}\nCareer resilience: ${rec.aiResilienceScore}/10`;
+    const shareData = {
+      title: `${rec.city}, ${rec.country} on EncoreOS`,
+      text,
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        track("recommendation_shared", {
+          ...recommendationAnalytics,
+          share_method: "native",
+        });
+        resetShareState("shared");
+        return;
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          track("recommendation_share_cancelled", recommendationAnalytics);
+          return;
+        }
+      }
+    }
+
+    await navigator.clipboard.writeText(`${text}\n\n${shareUrl}`);
+    track("recommendation_shared", {
+      ...recommendationAnalytics,
+      share_method: "clipboard",
+    });
+    resetShareState("copied");
   };
 
   const handleUnlock = () => {
@@ -106,7 +140,11 @@ function RecommendationCard({
             onClick={handleShare}
             className="rounded-[8px] border border-border px-3 py-2 text-xs font-semibold text-text-secondary transition hover:border-text hover:text-text"
           >
-            {copied ? "Copied" : "Share"}
+            {shareState === "shared"
+              ? "Shared"
+              : shareState === "copied"
+              ? "Copied"
+              : "Share"}
           </button>
         </div>
       </div>
@@ -169,11 +207,21 @@ function RecommendationCard({
           <button
             onClick={handleUnlock}
             disabled={unlockLoading}
-            className="w-full rounded-[8px] bg-text px-4 py-3 text-left text-sm font-bold text-white transition hover:bg-night disabled:opacity-60"
+            className="group w-full rounded-[8px] border border-accent/30 bg-[#fff3df] px-4 py-3 text-left text-sm font-bold text-text shadow-soft transition hover:border-accent hover:bg-accent hover:text-white disabled:opacity-60"
           >
-            {unlockLoading
-              ? "Opening checkout..."
-              : "Go deeper on this path"}
+            <span className="flex items-center justify-between gap-3">
+              <span>
+                {unlockLoading
+                  ? "Checking availability..."
+                  : "Go deeper on this path"}
+              </span>
+              <span className="rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] uppercase text-white transition group-hover:bg-white/90 group-hover:text-accent">
+                coming soon
+              </span>
+            </span>
+            <span className="mt-1 block text-xs font-medium text-text-secondary transition group-hover:text-white/80">
+              Tradeoffs, next steps, and local starting points.
+            </span>
           </button>
         )}
 
@@ -229,6 +277,12 @@ export default function ResultsView({
     result.totalRecommendations || result.recommendations.length;
   const visibleRecommendations = result.recommendations;
   const hasDeepDive = isPaid || Boolean(result.paid);
+  const shareUrl =
+    typeof window !== "undefined" && result.shareToken
+      ? `${window.location.origin}/results?token=${result.shareToken}`
+      : typeof window !== "undefined"
+      ? window.location.href
+      : "";
   const viewed = useRef(false);
 
   useEffect(() => {
@@ -323,6 +377,7 @@ export default function ResultsView({
               isPaid={hasDeepDive}
               onUnlock={onUnlock}
               unlockLoading={unlockLoading}
+              shareUrl={shareUrl}
             />
           ))}
         </div>
