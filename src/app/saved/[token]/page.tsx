@@ -19,17 +19,15 @@ export default function SavedResultsPage() {
   useEffect(() => {
     if (!token) return;
 
-    // Check localStorage for paid status
-    if (localStorage.getItem(`encore_paid_${token}`) === "true") {
-      setIsPaid(true);
-    }
-
     fetch(`/api/results?token=${token}`)
       .then((r) => {
         if (!r.ok) throw new Error("Not found");
         return r.json();
       })
-      .then(setResult)
+      .then((data) => {
+        setResult(data);
+        setIsPaid(Boolean(data.paid));
+      })
       .catch(() => setError("Results not found"));
   }, [token]);
 
@@ -55,7 +53,7 @@ export default function SavedResultsPage() {
 
   if (error) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center">
+      <main className="min-h-screen bg-bg flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-black text-text mb-4">{error}</h2>
           <Link
@@ -71,7 +69,7 @@ export default function SavedResultsPage() {
 
   if (!result) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center">
+      <main className="min-h-screen bg-bg flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-border border-t-text rounded-full animate-spin" />
       </main>
     );

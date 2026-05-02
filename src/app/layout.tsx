@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
-    apple: "/icon-192.png",
+    other: [{ rel: "icon", url: "/icon.svg", type: "image/svg+xml" }],
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#10141F",
   width: "device-width",
   initialScale: 1,
 };

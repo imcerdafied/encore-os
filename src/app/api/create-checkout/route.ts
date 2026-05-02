@@ -10,8 +10,14 @@ export async function POST(req: NextRequest) {
 
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
-  // Mock mode: no Stripe key configured
   if (!stripeSecretKey) {
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json(
+        { error: "Payments are not configured" },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json({
       mockMode: true,
       url: `/results?mock_paid=true&token=${token}`,

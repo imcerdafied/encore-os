@@ -5,7 +5,11 @@ import { AssessmentData, Recommendation } from "@/lib/types";
 import { getServiceClient } from "@/lib/supabase";
 
 function getOpenAI() {
-  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error("OpenAI is not configured");
+  }
+  return new OpenAI({ apiKey });
 }
 
 function buildPrompt(data: AssessmentData): string {
@@ -120,7 +124,9 @@ export async function POST(request: NextRequest) {
       id,
       shareToken,
       inputs: data,
-      recommendations,
+      recommendations: recommendations.slice(0, 1),
+      totalRecommendations: recommendations.length,
+      paid: false,
       createdAt: new Date().toISOString(),
     });
   } catch (err) {

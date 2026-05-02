@@ -26,21 +26,13 @@ create index idx_email_captures_email on email_captures(email);
 alter table assessments enable row level security;
 alter table email_captures enable row level security;
 
--- Allow anonymous inserts (assessment without auth)
-create policy "Allow anonymous insert" on assessments
-  for insert with check (true);
-
--- Allow reading by share token
-create policy "Allow read by share token" on assessments
-  for select using (true);
-
--- Allow email capture inserts
-create policy "Allow email capture insert" on email_captures
-  for insert with check (true);
-
--- Allow updating assessments (for payment status)
-create policy "Allow update assessments" on assessments
-  for update using (true);
+-- All reads/writes are handled by Next.js API routes using the service role.
+-- Keep direct anonymous access closed so private assessment inputs and paid
+-- recommendations cannot be queried or updated from the browser.
+drop policy if exists "Allow anonymous insert" on assessments;
+drop policy if exists "Allow read by share token" on assessments;
+drop policy if exists "Allow email capture insert" on email_captures;
+drop policy if exists "Allow update assessments" on assessments;
 
 -- Payment columns
 alter table assessments add column if not exists paid boolean default false;

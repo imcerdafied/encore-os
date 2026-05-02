@@ -75,10 +75,10 @@ function OptionButton({
     <button
       type="button"
       onClick={onClick}
-      className={`px-4 py-3 border text-sm text-left transition-all ${
+      className={`rounded-[8px] border px-4 py-3 text-left text-sm font-medium transition-all ${
         selected
-          ? "bg-text text-white border-text"
-          : "bg-white border-border text-text hover:border-text-secondary"
+          ? "border-accent bg-accent text-white shadow-soft"
+          : "border-border bg-surface text-text hover:border-accent hover:bg-[#fff3df]"
       }`}
     >
       {label}
@@ -145,7 +145,7 @@ export default function AssessPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center">
+      <main className="min-h-screen bg-bg flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
           <div className="w-12 h-12 border-2 border-border border-t-text rounded-full animate-spin mx-auto mb-8" />
           <h2 className="text-2xl font-black text-text mb-3">
@@ -154,8 +154,8 @@ export default function AssessPage() {
           <p className="text-text-secondary text-sm mb-8">
             Analyzing 847 factors for your situation...
           </p>
-          <div className="w-full bg-bg-subtle h-px overflow-hidden">
-            <div className="h-full bg-text loading-bar" />
+          <div className="w-full bg-bg-subtle h-1 overflow-hidden rounded-full">
+            <div className="h-full bg-accent loading-bar" />
           </div>
           <div className="mt-8 text-text-secondary text-xs">
             <p className="animate-pulse">Evaluating cost of living data...</p>
@@ -166,32 +166,32 @@ export default function AssessPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-bg">
       {/* Progress bar */}
-      <div className="h-px bg-border">
+      <div className="h-1 bg-border">
         <div
-          className="h-full bg-text transition-all duration-500"
+          className="h-full bg-accent transition-all duration-500"
           style={{ width: progressWidth }}
         />
       </div>
 
-      <nav className="flex items-center justify-between px-6 py-5 max-w-[680px] mx-auto">
-        <Link href="/" className="font-mono text-sm text-text tracking-tight">
+      <nav className="flex items-center justify-between px-6 py-5 max-w-3xl mx-auto">
+        <Link href="/" className="font-mono text-sm text-text">
           encore-os
         </Link>
-        <span className="font-mono text-xs text-text-secondary">
+        <span className="rounded-[8px] bg-surface px-3 py-1 font-mono text-xs text-text-secondary">
           Step {step} of 5
         </span>
       </nav>
 
-      <div className="max-w-[680px] mx-auto px-6 py-8">
+      <div className="max-w-3xl mx-auto px-6 py-8">
         {/* Step 1: Where you are now */}
         {step === 1 && (
           <div className="animate-fade-in">
-            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+            <p className="font-mono text-xs text-text-secondary mb-6">
               &bull; encore-os / assess
             </p>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
+            <h2 className="text-3xl md:text-4xl font-black text-text mb-2">
               Where you are now
             </h2>
             <p className="text-text-secondary mb-10">
@@ -201,7 +201,7 @@ export default function AssessPage() {
 
             <div className="space-y-8">
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Current city / country
                 </label>
                 <input
@@ -209,12 +209,12 @@ export default function AssessPage() {
                   placeholder="e.g. Austin, TX or London, UK"
                   value={data.currentCity}
                   onChange={(e) => update({ currentCity: e.target.value })}
-                  className="w-full border border-text bg-white px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text text-[16px]"
+                  className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 text-[16px]"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Monthly take-home income (USD)
                 </label>
                 <div className="flex items-center gap-4">
@@ -236,7 +236,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Monthly expenses / rent (USD)
                 </label>
                 <div className="flex items-center gap-4">
@@ -258,7 +258,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Net worth / savings range
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -274,7 +274,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Work situation
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -295,10 +295,10 @@ export default function AssessPage() {
         {/* Step 2: Life situation */}
         {step === 2 && (
           <div className="animate-fade-in">
-            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+            <p className="font-mono text-xs text-text-secondary mb-6">
               &bull; encore-os / assess
             </p>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
+            <h2 className="text-3xl md:text-4xl font-black text-text mb-2">
               Life situation
             </h2>
             <p className="text-text-secondary mb-10">
@@ -307,7 +307,7 @@ export default function AssessPage() {
 
             <div className="space-y-8">
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Household
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -325,7 +325,7 @@ export default function AssessPage() {
               {(data.household === "Partner + kids" ||
                 data.household === "Single parent") && (
                 <div>
-                  <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                  <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                     Children&apos;s ages
                   </label>
                   <input
@@ -333,7 +333,7 @@ export default function AssessPage() {
                     placeholder="e.g. 4, 7, 12"
                     value={data.kidAges}
                     onChange={(e) => update({ kidAges: e.target.value })}
-                    className="w-full border border-text bg-white px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text text-[16px]"
+                    className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 text-[16px]"
                   />
                 </div>
               )}
@@ -348,7 +348,7 @@ export default function AssessPage() {
                     update({ agingParents: !data.agingParents })
                   }
                   className={`w-12 h-6 transition-colors ${
-                    data.agingParents ? "bg-text" : "bg-border"
+                    data.agingParents ? "bg-accent" : "bg-border"
                   }`}
                 >
                   <div
@@ -373,7 +373,7 @@ export default function AssessPage() {
                     })
                   }
                   className={`w-12 h-6 transition-colors ${
-                    data.healthConsiderations ? "bg-text" : "bg-border"
+                    data.healthConsiderations ? "bg-accent" : "bg-border"
                   }`}
                 >
                   <div
@@ -388,7 +388,7 @@ export default function AssessPage() {
 
               {data.healthConsiderations && (
                 <div>
-                  <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                  <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                     Health details (optional)
                   </label>
                   <input
@@ -398,7 +398,7 @@ export default function AssessPage() {
                     onChange={(e) =>
                       update({ healthDetails: e.target.value })
                     }
-                    className="w-full border border-text bg-white px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text text-[16px]"
+                    className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 text-[16px]"
                   />
                 </div>
               )}
@@ -409,10 +409,10 @@ export default function AssessPage() {
         {/* Step 3: Priorities */}
         {step === 3 && (
           <div className="animate-fade-in">
-            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+            <p className="font-mono text-xs text-text-secondary mb-6">
               &bull; encore-os / assess
             </p>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
+            <h2 className="text-3xl md:text-4xl font-black text-text mb-2">
               What matters most
             </h2>
             <p className="text-text-secondary mb-10">
@@ -435,9 +435,9 @@ export default function AssessPage() {
                         onClick={() => updatePriority(p, n)}
                         className={`w-8 h-8 text-xs font-medium transition-all ${
                           data.priorities[p] === n
-                            ? "bg-text text-white"
+                            ? "bg-accent text-white"
                             : data.priorities[p] && data.priorities[p] >= n
-                            ? "bg-text/10 text-text"
+                            ? "bg-accent/10 text-text"
                             : "bg-bg-subtle text-text-secondary hover:bg-border"
                         }`}
                       >
@@ -457,10 +457,10 @@ export default function AssessPage() {
         {/* Step 4: Openness to change */}
         {step === 4 && (
           <div className="animate-fade-in">
-            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+            <p className="font-mono text-xs text-text-secondary mb-6">
               &bull; encore-os / assess
             </p>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
+            <h2 className="text-3xl md:text-4xl font-black text-text mb-2">
               Openness to change
             </h2>
             <p className="text-text-secondary mb-10">
@@ -469,7 +469,7 @@ export default function AssessPage() {
 
             <div className="space-y-8">
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Geographic range
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -485,7 +485,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Urban preference
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -501,7 +501,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Timeline
                 </label>
                 <div className="grid grid-cols-1 gap-3">
@@ -517,7 +517,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Biggest fear about moving (optional)
                 </label>
                 <textarea
@@ -525,7 +525,7 @@ export default function AssessPage() {
                   value={data.biggestFear}
                   onChange={(e) => update({ biggestFear: e.target.value })}
                   rows={3}
-                  className="w-full border border-text bg-white px-4 py-3 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text resize-none text-[16px]"
+                  className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none text-[16px]"
                 />
               </div>
             </div>
@@ -535,10 +535,10 @@ export default function AssessPage() {
         {/* Step 5: AI angle */}
         {step === 5 && (
           <div className="animate-fade-in">
-            <p className="font-mono text-xs text-text-secondary tracking-wide mb-6">
+            <p className="font-mono text-xs text-text-secondary mb-6">
               &bull; encore-os / assess
             </p>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text mb-2">
+            <h2 className="text-3xl md:text-4xl font-black text-text mb-2">
               The AI angle
             </h2>
             <p className="text-text-secondary mb-10">
@@ -547,7 +547,7 @@ export default function AssessPage() {
 
             <div className="space-y-8">
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   Current job / field
                 </label>
                 <input
@@ -555,12 +555,12 @@ export default function AssessPage() {
                   placeholder="e.g. Marketing manager, Software engineer, Nurse"
                   value={data.currentJob}
                   onChange={(e) => update({ currentJob: e.target.value })}
-                  className="w-full border border-text bg-white px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-1 focus:ring-text text-[16px]"
+                  className="w-full rounded-[8px] border border-border bg-surface px-4 py-3 h-12 text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-accent/30 text-[16px]"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   How worried are you about AI affecting your income?
                 </label>
                 <div className="flex items-center gap-4">
@@ -584,7 +584,7 @@ export default function AssessPage() {
               </div>
 
               <div>
-                <label className="block font-mono text-xs text-text-secondary uppercase tracking-wider mb-3">
+                <label className="block font-mono text-xs text-text-secondary uppercase mb-3">
                   What are you looking for?
                 </label>
                 <div className="grid grid-cols-1 gap-3">
@@ -629,7 +629,7 @@ export default function AssessPage() {
               onClick={() => setStep((s) => s + 1)}
               className={`px-6 py-3 text-sm font-medium transition-all ${
                 canNext()
-                  ? "bg-text text-white hover:bg-black"
+                  ? "bg-accent text-white hover:bg-night"
                   : "bg-border text-text-secondary cursor-not-allowed"
               }`}
             >
@@ -639,7 +639,7 @@ export default function AssessPage() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-8 py-3 text-sm font-medium bg-text text-white hover:bg-black transition-all"
+              className="rounded-[8px] px-8 py-3 text-sm font-medium bg-accent text-white hover:bg-night transition-all"
             >
               Find My Next Chapter &rarr;
             </button>

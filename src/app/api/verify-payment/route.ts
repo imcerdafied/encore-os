@@ -7,8 +7,10 @@ export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
   const mockPaid = req.nextUrl.searchParams.get("mock_paid");
 
-  // Mock mode
   if (mockPaid === "true") {
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json({ paid: false });
+    }
     return NextResponse.json({ paid: true });
   }
 
@@ -25,6 +27,10 @@ export async function GET(req: NextRequest) {
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (!token || session.metadata?.assessment_token !== token) {
+      return NextResponse.json({ paid: false });
+    }
 
     if (session.payment_status === "paid") {
       // Update Supabase

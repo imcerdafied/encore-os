@@ -29,11 +29,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Results not found" }, { status: 404 });
     }
 
+    const recommendations = Array.isArray(data.results_json)
+      ? data.results_json
+      : [];
+    const paid = Boolean(data.paid);
+
     return NextResponse.json({
       id: data.id,
       shareToken: data.share_token,
       inputs: data.inputs_json,
-      recommendations: data.results_json,
+      recommendations: paid ? recommendations : recommendations.slice(0, 1),
+      totalRecommendations: recommendations.length,
+      paid,
       createdAt: data.created_at,
     });
   } catch {

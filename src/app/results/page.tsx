@@ -18,22 +18,6 @@ function ResultsContent() {
     return result?.shareToken || searchParams.get("token") || "";
   }, [result, searchParams]);
 
-  // Check if already paid via localStorage
-  const checkLocalPaid = useCallback((token: string) => {
-    if (token && localStorage.getItem(`encore_paid_${token}`) === "true") {
-      return true;
-    }
-    return false;
-  }, []);
-
-  // Mark as paid in localStorage
-  const markPaid = useCallback((token: string) => {
-    if (token) {
-      localStorage.setItem(`encore_paid_${token}`, "true");
-    }
-    setIsPaid(true);
-  }, []);
-
   // Verify payment on mount if session_id or mock_paid present
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
@@ -50,12 +34,21 @@ function ResultsContent() {
         .then((r) => r.json())
         .then((data) => {
           if (data.paid && token) {
-            markPaid(token);
+            setIsPaid(true);
+            return fetch(`/api/results?token=${token}`);
+          }
+          return null;
+        })
+        .then((r) => (r?.ok ? r.json() : null))
+        .then((data) => {
+          if (data) {
+            setResult(data);
+            setIsPaid(Boolean(data.paid));
           }
         })
         .catch(() => {});
     }
-  }, [searchParams, markPaid]);
+  }, [searchParams]);
 
   // Load results
   useEffect(() => {
@@ -67,20 +60,13 @@ function ResultsContent() {
       return;
     }
 
-    // Check localStorage for paid status
-    if (token && checkLocalPaid(token)) {
-      setIsPaid(true);
-    }
-
     // Try sessionStorage first (from assess page)
     if (id) {
       const stored = sessionStorage.getItem(`result-${id}`);
       if (stored) {
         const parsed = JSON.parse(stored);
         setResult(parsed);
-        if (parsed.shareToken && checkLocalPaid(parsed.shareToken)) {
-          setIsPaid(true);
-        }
+        setIsPaid(Boolean(parsed.paid));
         return;
       }
     }
@@ -94,12 +80,10 @@ function ResultsContent() {
       })
       .then((data) => {
         setResult(data);
-        if (data.shareToken && checkLocalPaid(data.shareToken)) {
-          setIsPaid(true);
-        }
+        setIsPaid(Boolean(data.paid));
       })
       .catch(() => setError("Results not found. They may have expired."));
-  }, [searchParams, checkLocalPaid]);
+  }, [searchParams]);
 
   const handleUnlock = async () => {
     const token = getToken();
@@ -126,7 +110,7 @@ function ResultsContent() {
 
   if (error) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center">
+      <main className="min-h-screen bg-bg flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-black text-text mb-4">{error}</h2>
           <Link
@@ -142,7 +126,7 @@ function ResultsContent() {
 
   if (!result) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center">
+      <main className="min-h-screen bg-bg flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-border border-t-text rounded-full animate-spin" />
       </main>
     );
@@ -162,7 +146,7 @@ export default function ResultsPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-white flex items-center justify-center">
+        <main className="min-h-screen bg-bg flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-border border-t-text rounded-full animate-spin" />
         </main>
       }

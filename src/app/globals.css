@@ -5,12 +5,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
 :root {
-  --bg: #FFFFFF;
-  --bg-subtle: #F7F7F5;
-  --text: #111111;
-  --text-secondary: #666666;
-  --accent: #C9A84C;
-  --border: #E0E0E0;
+  --bg: #FBF7EF;
+  --bg-subtle: #F2EADC;
+  --surface: #FFFAF2;
+  --text: #15130F;
+  --text-secondary: #6F6A60;
+  --accent: #C65A32;
+  --teal: #0F8B8D;
+  --gold: #C9A24F;
+  --border: #DED2BD;
   --font-mono: "Courier New", Courier, monospace;
 }
 
@@ -29,12 +32,12 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: Inter, system-ui, sans-serif;
   font-weight: 900;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 ::selection {
-  background: var(--text);
-  color: var(--bg);
+  background: var(--accent);
+  color: white;
 }
 
 ::-webkit-scrollbar {
@@ -56,7 +59,8 @@ h1, h2, h3, h4, h5, h6 {
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  height: 2px;
+  height: 4px;
+  border-radius: 999px;
   background: var(--border);
   outline: none;
 }
@@ -67,20 +71,28 @@ input[type="range"]::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--text);
+  background: var(--accent);
   cursor: pointer;
   border: 2px solid var(--bg);
-  box-shadow: 0 0 0 1px var(--text);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
 input[type="range"]::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--text);
+  background: var(--accent);
   cursor: pointer;
   border: 2px solid var(--bg);
-  box-shadow: 0 0 0 1px var(--text);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 40%, white);
+  outline-offset: 3px;
 }
 
 @keyframes analyzeSlide {

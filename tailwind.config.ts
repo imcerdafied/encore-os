@@ -10,19 +10,29 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          DEFAULT: "#FFFFFF",
-          subtle: "#F7F7F5",
+          DEFAULT: "#FBF7EF",
+          subtle: "#F2EADC",
         },
+        surface: "#FFFAF2",
         text: {
-          DEFAULT: "#111111",
-          secondary: "#666666",
+          DEFAULT: "#15130F",
+          secondary: "#6F6A60",
         },
-        accent: "#C9A84C",
-        border: "#E0E0E0",
+        accent: {
+          DEFAULT: "#C65A32",
+          dark: "#9F3F22",
+        },
+        teal: "#0F8B8D",
+        gold: "#C9A24F",
+        border: "#DED2BD",
+        night: "#10141F",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
         mono: ['"Courier New"', "Courier", "monospace"],
+      },
+      boxShadow: {
+        soft: "0 18px 50px rgba(21, 19, 15, 0.08)",
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out",

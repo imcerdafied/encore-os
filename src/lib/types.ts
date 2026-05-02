@@ -70,5 +70,7 @@ export interface AssessmentResult {
   shareToken: string;
   inputs: AssessmentData;
   recommendations: Recommendation[];
+  totalRecommendations?: number;
+  paid?: boolean;
   createdAt: string;
 }
