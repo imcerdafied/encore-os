@@ -5,6 +5,7 @@ import { AssessmentData, Recommendation } from "@/lib/types";
 import { getServiceClient } from "@/lib/supabase";
 import { getAssessmentAnalyticsProperties } from "@/lib/analytics-events";
 import { captureServerEvent } from "@/lib/posthog-server";
+import { checkRateLimit, getRateLimitKey } from "@/lib/rate-limit";
 
 function getOpenAI() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -213,6 +214,29 @@ function stripDeepDive(recommendations: Recommendation[]) {
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimit = checkRateLimit(getRateLimitKey(request), {
+      limit: 5,
+      windowMs: 60 * 60 * 1000,
+    });
+
+    if (!rateLimit.allowed) {
+      await captureServerEvent("assessment_rate_limited_server", "server", {
+        reset_at: new Date(rateLimit.resetAt).toISOString(),
+      });
+
+      return NextResponse.json(
+        { error: "Too many assessment attempts. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(
+              Math.max(1, Math.ceil((rateLimit.resetAt - Date.now()) / 1000))
+            ),
+          },
+        }
+      );
+    }
+
     const data: AssessmentData = await request.json();
 
     if (!data.currentCity || !data.currentCountry || !data.household) {
